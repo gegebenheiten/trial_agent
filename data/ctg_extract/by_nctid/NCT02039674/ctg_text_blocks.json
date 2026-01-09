@@ -1,0 +1,639 @@
+[
+  {
+    "nct_id": "NCT02039674",
+    "brief_title": "A Study of Pembrolizumab (MK-3475) in Combination With Chemotherapy or Immunotherapy in Participants With Non-small Cell Lung Cancer (MK-3475-021/KEYNOTE-021)",
+    "official_title": "A Phase I/II Study of MK-3475 (SCH900475) in Combination With Chemotherapy or Immunotherapy in Patients With Locally Advanced or Metastatic Non-Small Cell Lung Carcinoma",
+    "brief_summary": "The purpose of this study is to determine the safety, tolerability, and efficacy of pembrolizumab (MK-3475) in combination with chemotherapy or immunotherapy in participants with unresectable or metastatic non-small cell lung cancer (NSCLC).",
+    "detailed_description": "",
+    "eligibility_criteria": "Inclusion Criteria: - Stage IIIb/IV NSCLC - Disease progression >1 year after completing adjuvant therapy for Stage I-IIIA disease and no systemic therapy for the recurrent disease - Resolution of any toxic effects (excepting alopecia) of the most recent therapy - At least one radiographically measurable lesion - Performance status of 0 or 1 on the Eastern Cooperative Oncology Group (ECOG) Performance Status scale - Female participants of reproductive potential must not be pregnant (negative urine or serum human chorionic gonadotropin test within 72 hours of study start) - Female and male participants of reproductive potential must agree to use adequate contraception throughout the study period and for up to 120 days after the last dose of study therapy and for up to 180 days after the last dose of chemotherapeutic agents or tyrosine kinase inhibitors Exclusion Criteria: - Currently participating or has participated in a study of an investigational agent or using an investigational device within 4 weeks of administration of pembrolizumab - Expected to require any other form of antineoplastic therapy while on study - Is on chronic systemic steroid therapy or on any other form of immunosuppressive medication - Has received a live-virus vaccination within 30 days of planned treatment start - Clinically active diverticulitis, intra-abdominal abscess, gastrointestinal (GI) obstruction, or abdominal carcinomatosis (known risks factors for bowel perforation) - History of a hematologic malignancy, primary brain tumor or sarcoma, or of another primary solid tumor, unless the participant has undergone potentially curative therapy with no evidence of that disease for 5 years - Active central nervous system (CNS) metastases and/or carcinomatous meningitis - Severe hypersensitivity reaction to treatment with another monoclonal antibody (mAb) - Active autoimmune disease that has required systemic treatment in the past 2 years (replacement therapies for hormone deficiencies are allowed) - Prior treatment with any other anti-programmed cell death protein-1 (anti-PD-1), or PD Ligand-1 (PD-L1) or PD Ligand-2 (PD-L2) agent or an antibody targeting other immuno-regulatory receptors or mechanisms - Systemic cytotoxic chemotherapy, antineoplastic biologic therapy, or major surgery within 3 weeks of the first dose of study medication - Radiation therapy to lung >30 Gy within 6 months of first dose of study medication - Prior tyrosine kinase inhibitor therapy or palliative radiation within 7 days of first dose of study medication - Active infection requiring therapy - History of Human Immunodeficiency Virus (HIV) - Active Hepatitis B or C - Symptomatic ascites or pleural effusion - Interstitial lung disease or pneumonitis requiring oral or IV glucocorticoids - Pregnant or breastfeeding, or expecting to conceive or father children within the projected duration of the study - Psychiatric disorders and substance (drug/alcohol) abuse",
+    "design_info": {
+      "study_type": "Interventional",
+      "phase": "Phase 1/Phase 2",
+      "allocation": "Randomized",
+      "intervention_model": "Parallel Assignment",
+      "masking": "None (Open Label)",
+      "primary_purpose": "Treatment",
+      "number_of_arms": "14",
+      "enrollment": "267",
+      "enrollment_type": "actual"
+    },
+    "arm_groups": [
+      {
+        "label": "Part 1 Cohort A2 (Pembro2mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+        "type": "Experimental",
+        "description": "Cohort A participants receive pembrolizumab (2 mg/kg) via intravenous (IV) infusion on Day 1 of each 3-week cycle PLUS paclitaxel (200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (Aare Under the Curve [AUC] 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])",
+        "type": "Experimental",
+        "description": "Cohort B2 participants receive pembrolizumab (2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort C2 (Pembro 2mg/kg+Pemetrexed [Pe]+C)",
+        "type": "Experimental",
+        "description": "Cohort C2 participants receive pembrolizumab (2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort D1 (Pembro 10mg/kg+Ipilimumab [I])",
+        "type": "Experimental",
+        "description": "Cohort D1 participants receive pembrolizumab (10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort E (Pembro 2mg/kg+Erlotinib)",
+        "type": "Experimental",
+        "description": "Cohort E participants receive pembrolizumab (2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS erlotinib (150 mg) via oral tablet once a day on every day of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort F (Pembro 2mg/kg+Gefitinib)",
+        "type": "Experimental",
+        "description": "Cohort F participants receive pembrolizumab (2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS gefitinib (250 mg) via oral tablet once a day on every day of each 3-week cycle."
+      },
+      {
+        "label": "Part 2 Cohort G+ (Pembro 200mg+C+Pe)",
+        "type": "Experimental",
+        "description": "Cohort G+ participants receive pembrolizumab (200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 2 Cohort H (Pembro+I)",
+        "type": "Experimental",
+        "description": "Cohort H participants receive pembrolizumab (2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (1 mg/kg) via IV infusion on Day 1 of each 3-week cycle (at the recommended Phase II dose determined in Cohort D)."
+      },
+      {
+        "label": "Part 1 Cohort A10 (Pembro+Paclitaxel [Pa]+Carboplatin [C])",
+        "type": "Experimental",
+        "description": "Cohort A10 participants receive pembrolizumab (10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 6 [mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort B10 (Pembro+Pa+C+Bevacizumab [B])",
+        "type": "Experimental",
+        "description": "Cohort B10 participants receive pembrolizumab (10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort C10 (Pembro 10mg/kg+Pemetrexed [Pe]+C)",
+        "type": "Experimental",
+        "description": "Cohort C10 participants receive pembrolizumab (10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 2 Cohort G- (Placebo+C+Pe)",
+        "type": "Experimental",
+        "description": "Cohort G- participants receive placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS."
+      },
+      {
+        "label": "Part 1 Cohort D2 (Pembro 10mg/kg+Ipilimumab [I])",
+        "type": "Experimental",
+        "description": "Cohort D2 participants receive pembrolizumab (10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (3 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+      },
+      {
+        "label": "Part 1 Cohort D4 (Pembro 2mg/kg+Ipilimumab [I])",
+        "type": "Experimental",
+        "description": "Cohort D1 participants receive pembrolizumab (2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+      }
+    ],
+    "interventions": [
+      {
+        "type": "biological",
+        "name": "Pembrolizumab",
+        "description": "IV on Day 1 of each 3-week cycle prior to chemo/immunotherapy",
+        "other_names": [
+          "MK-3475",
+          "KEYTRUDA®",
+          "SCH 900475"
+        ],
+        "labels": [
+          "Part 1 Cohort A10 (Pembro+Paclitaxel [Pa]+Carboplatin [C])",
+          "Part 1 Cohort A2 (Pembro2mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+          "Part 1 Cohort B10 (Pembro+Pa+C+Bevacizumab [B])",
+          "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])",
+          "Part 1 Cohort C10 (Pembro 10mg/kg+Pemetrexed [Pe]+C)",
+          "Part 1 Cohort C2 (Pembro 2mg/kg+Pemetrexed [Pe]+C)",
+          "Part 1 Cohort D1 (Pembro 10mg/kg+Ipilimumab [I])",
+          "Part 1 Cohort D2 (Pembro 10mg/kg+Ipilimumab [I])",
+          "Part 1 Cohort D4 (Pembro 2mg/kg+Ipilimumab [I])",
+          "Part 1 Cohort E (Pembro 2mg/kg+Erlotinib)",
+          "Part 1 Cohort F (Pembro 2mg/kg+Gefitinib)",
+          "Part 2 Cohort G+ (Pembro 200mg+C+Pe)",
+          "Part 2 Cohort H (Pembro+I)"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Paclitaxel",
+        "description": "IV on Day 1 of each 3-week cycle for a maximum of 4 administrations",
+        "other_names": [
+          "ABRAXANE®"
+        ],
+        "labels": [
+          "Part 1 Cohort A10 (Pembro+Paclitaxel [Pa]+Carboplatin [C])",
+          "Part 1 Cohort A2 (Pembro2mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+          "Part 1 Cohort B10 (Pembro+Pa+C+Bevacizumab [B])",
+          "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Carboplatin",
+        "description": "IV on Day 1 of each 3-week cycle for a maximum of 4 administrations",
+        "other_names": [
+          "PARAPLATIN®"
+        ],
+        "labels": [
+          "Part 1 Cohort A10 (Pembro+Paclitaxel [Pa]+Carboplatin [C])",
+          "Part 1 Cohort A2 (Pembro2mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+          "Part 1 Cohort B10 (Pembro+Pa+C+Bevacizumab [B])",
+          "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])",
+          "Part 1 Cohort C10 (Pembro 10mg/kg+Pemetrexed [Pe]+C)",
+          "Part 1 Cohort C2 (Pembro 2mg/kg+Pemetrexed [Pe]+C)",
+          "Part 2 Cohort G+ (Pembro 200mg+C+Pe)",
+          "Part 2 Cohort G- (Placebo+C+Pe)"
+        ]
+      },
+      {
+        "type": "biological",
+        "name": "Bevacizumab",
+        "description": "IV on Day 1 of each 3-week cycle",
+        "other_names": [
+          "AVASTIN®"
+        ],
+        "labels": [
+          "Part 1 Cohort B10 (Pembro+Pa+C+Bevacizumab [B])",
+          "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Pemetrexed",
+        "description": "IV on Day 1 of each 3-week cycle",
+        "other_names": [
+          "ALIMTA®"
+        ],
+        "labels": [
+          "Part 1 Cohort C10 (Pembro 10mg/kg+Pemetrexed [Pe]+C)",
+          "Part 1 Cohort C2 (Pembro 2mg/kg+Pemetrexed [Pe]+C)",
+          "Part 2 Cohort G+ (Pembro 200mg+C+Pe)",
+          "Part 2 Cohort G- (Placebo+C+Pe)"
+        ]
+      },
+      {
+        "type": "biological",
+        "name": "Ipilimumab",
+        "description": "IV on Day 1 of each 3-week cycle for a maximum of 4 administrations",
+        "other_names": [
+          "YERVOY®"
+        ],
+        "labels": [
+          "Part 1 Cohort D1 (Pembro 10mg/kg+Ipilimumab [I])",
+          "Part 1 Cohort D2 (Pembro 10mg/kg+Ipilimumab [I])",
+          "Part 1 Cohort D4 (Pembro 2mg/kg+Ipilimumab [I])",
+          "Part 2 Cohort H (Pembro+I)"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Erlotinib",
+        "description": "Orally tablet once daily",
+        "other_names": [
+          "TARCEVA®"
+        ],
+        "labels": [
+          "Part 1 Cohort E (Pembro 2mg/kg+Erlotinib)"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Gefitinib",
+        "description": "Oral tablet once daily",
+        "other_names": [
+          "IRESSA®"
+        ],
+        "labels": [
+          "Part 1 Cohort F (Pembro 2mg/kg+Gefitinib)"
+        ]
+      }
+    ],
+    "primary_outcomes": [
+      {
+        "measure": "Part 2 Cohorts G+ and G-: Objective Response Rate (ORR)",
+        "time_frame": "Up to approximately 2 years",
+        "description": "ORR was defined as the percentage of participants in the analysis population who had a Complete Response (CR: Disappearance of all target lesions) or a Partial Response (PR: At least a 30% decrease in the sum of diameters of target lesions) per Response Criteria in Solid Tumors version 1.1 (RECIST 1.1) as assessed by blinded independent central review (BICR)."
+      },
+      {
+        "measure": "Part 2 Cohorts D4 and H: Objective Response Rate (ORR)",
+        "time_frame": "Up to approximately 2 years",
+        "description": "For participants who demonstrated a confirmed response (Complete Response [CR]: Disappearance of all target lesions or Partial Response [PR]: At least a 30% decrease in the sum of diameters of target lesions) per RECIST 1.1. Per RECIST 1.1, DOR was defined as the time from first documented evidence of CR or PR until disease progression or death. DOR was assessed by BICR."
+      },
+      {
+        "measure": "All Cohorts: Number of Participants Who Experienced a Dose-limiting Toxicity (DLT)",
+        "time_frame": "Cycle 1 (Up to 21 days)",
+        "description": "DLTs were assessed using the National Cancer Institute Common Terminology Criteria for Adverse Events version 4. A DLT was defined as any of the following events: Grade 4 non-hematologic toxicity (not laboratory); Grade 4 hematologic toxicity lasting ≥7 days; Grade 3 non-hematologic toxicity (not laboratory, specifically nausea, vomiting and diarrhea) lasting >3 days despite optimal supportive care; Any Grade 3 or Grade 4 non-hematologic laboratory value requiring treatment or hospitalization, or persisting for >1 week; Febrile neutropenia Grade 3 or Grade 4; Qualifying thrombocytopenia <25,000/mm^3; Prolonged delay (>2 weeks) in initiating Cycle 2 due to treatment-related toxicity; Missing >10% of erlotinib or gefitinib doses as a result of adverse events (AEs) during the DLT window of observation; or Grade 5 toxicity."
+      }
+    ],
+    "secondary_outcomes": [
+      {
+        "measure": "Part 2 Cohorts G+ and G-: Progression-Free Survival (PFS)",
+        "time_frame": "Up to approximately 2 years",
+        "description": "PFS was defined as the time from randomization to the first documented disease progression, or death due to any cause, whichever occurred first. Per RECIST 1.1, progressive disease was defined as at least a 20% increase in the sum of diameters of target lesions. In addition to the relative increase of 20%, the sum must also demonstrate an absolute increase of at least 5 mm. The appearance of one or more new lesions was also considered progression. PFS was assessed by BICR."
+      },
+      {
+        "measure": "Part 2 Cohorts G+ and G-: Overall Survival (OS)",
+        "time_frame": "Up to approximately 2 years",
+        "description": "OS was defined as the time from randomization to death due to any cause."
+      },
+      {
+        "measure": "Part 2 Cohorts G+ and G-: Duration of Response (DOR)",
+        "time_frame": "Up to approximately 2 years",
+        "description": "For participants who demonstrated a confirmed response (Complete Response [CR]: Disappearance of all target lesions or Partial Response [PR]: At least a 30% decrease in the sum of diameters of target lesions) per RECIST 1.1. Per RECIST 1.1, DOR was defined as the time from first documented evidence of CR or PR until disease progression or death. DOR was assessed by BICR."
+      }
+    ],
+    "participant_flow": {
+      "recruitment_details": "This results disclosure is based on efficacy data cutoff dates of 08-Aug-2016 for Cohorts C and G (primary endpoint); 07-Nov-2016 for Cohorts A, B, D, E, F and H; and 19-Aug-2019 for Cohort G (secondary endpoints).",
+      "pre_assignment_details": "",
+      "groups": [
+        {
+          "group_id": "P1",
+          "title": "Part1 Cohort A2 (Pembro 2 mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+          "description": "Cohort A2 participants received pembrolizumab (Pembro 2 mg/kg) via intravenous (IV) infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C Area Under the Curve [AUC] 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P2",
+          "title": "Part1 Cohort A10 (Pembro10mg/kg+Pa+C)",
+          "description": "Cohort A10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P3",
+          "title": "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])",
+          "description": "Cohort B2 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (B 15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P4",
+          "title": "Part 1 Cohort B10 (Pembro 10 mg/kg+Pa+C+B)",
+          "description": "Cohort B10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2 via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (B 15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P5",
+          "title": "Part 1 Cohort C2 (Pembro 2 mg/kg+Pemetrexed [Pe]+C)",
+          "description": "Cohort C2 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P6",
+          "title": "Part 1 Cohort C10 (Pembro 10 mg/kg+Pe+C)",
+          "description": "Cohort C10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P7",
+          "title": "Part 1 Cohort D1 (Pembro 10 mg/kg+Ipilimumab [I])",
+          "description": "Cohort D1 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS iIpilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P8",
+          "title": "Part 1 Cohort D2 (Pembro 10 mg/kg+I)",
+          "description": "Cohort D2 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS iIpilimumab (I 3 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P9",
+          "title": "Part 1 Cohort D4 (Pembro 2 mg/kg+I)",
+          "description": "Cohort D4 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS iIpilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P10",
+          "title": "Part 1 Cohort E (Pembro 2 mg/kg+Erlotinib)",
+          "description": "Cohort E participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS erlotinib (E 150 mg) via oral tablet once a day on every day of each 3-week cycle."
+        },
+        {
+          "group_id": "P11",
+          "title": "Part 1 Cohort F (Pembro 2 mg/kg+Gefitinib)",
+          "description": "Cohort F participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS gefitinib (G 250 mg) via oral tablet once a day on every day of each 3-week cycle."
+        },
+        {
+          "group_id": "P12",
+          "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+          "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P13",
+          "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+          "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin AUC 5 (C 5 mg/mL/min) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "P14",
+          "title": "Part 2 Cohort H (Pembro 2mg/kg+I)",
+          "description": "Cohort H participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle (at the recommended Phase 2 dose determined in Cohort D)."
+        }
+      ]
+    },
+    "baseline_results": {
+      "population": "For Cohorts A, B, C and G, the analysis population consisted of all randomized participants. For Cohorts D, E, F and H, the analysis population consisted of all treated participants.",
+      "groups": [
+        {
+          "group_id": "B1",
+          "title": "Part1CohortA2 (Pembro 2 mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+          "description": "Cohort A2 participants received pembrolizumab (Pembro 2 mg/kg) via intravenous (IV) infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C Area Under the Curve [AUC] 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B2",
+          "title": "Part1CohortA10 (Pembro10mg/kg+Pa+C)",
+          "description": "Cohort A10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B3",
+          "title": "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])",
+          "description": "Cohort B2 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (B 15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B4",
+          "title": "Part 1 Cohort B10 (Pembro 10 mg/kg+Pa+C+B)",
+          "description": "Cohort B10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2 via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (B 15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B5",
+          "title": "Part 1 Cohort C2 (Pembro 2 mg/kg+Pemetrexed [Pe]+C)",
+          "description": "Cohort C2 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B6",
+          "title": "Part 1 Cohort C10 (Pembro 10 mg/kg+Pe+C)",
+          "description": "Cohort C10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B7",
+          "title": "Part 1 Cohort D1 (Pembro 10 mg/kg+Ipilimumab [I])",
+          "description": "Cohort D1 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B8",
+          "title": "Part 1 Cohort D2 (Pembro 10 mg/kg+I)",
+          "description": "Cohort D2 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 3 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B9",
+          "title": "Part 1 Cohort D4 (Pembro 2 mg/kg+I)",
+          "description": "Cohort D4 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B10",
+          "title": "Part 1 Cohort E (Pembro 2 mg/kg+Erlotinib)",
+          "description": "Cohort E participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS erlotinib (E 150 mg) via oral tablet once a day on every day of each 3-week cycle."
+        },
+        {
+          "group_id": "B11",
+          "title": "Part 1 Cohort F (Pembro 2 mg/kg+Gefitinib)",
+          "description": "Cohort F participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS gefitinib (G 250 mg) via oral tablet once a day on every day of each 3-week cycle."
+        },
+        {
+          "group_id": "B12",
+          "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+          "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B13",
+          "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+          "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+        },
+        {
+          "group_id": "B14",
+          "title": "Part 2 Cohort H (Pembro 2 mg/kg+I)",
+          "description": "Cohort H participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle (at the recommended Phase 2 dose determined in Cohort D)."
+        },
+        {
+          "group_id": "B15",
+          "title": "Total",
+          "description": "Total of all reporting groups"
+        }
+      ]
+    },
+    "results_outcomes": [
+      {
+        "type": "Primary",
+        "title": "Part 2 Cohorts G+ and G-: Objective Response Rate (ORR)",
+        "description": "ORR was defined as the percentage of participants in the analysis population who had a Complete Response (CR: Disappearance of all target lesions) or a Partial Response (PR: At least a 30% decrease in the sum of diameters of target lesions) per Response Criteria in Solid Tumors version 1.1 (RECIST 1.1) as assessed by blinded independent central review (BICR).",
+        "time_frame": "Up to approximately 2 years",
+        "population": "The analysis population consisted of all randomized Cohort G participants (database cutoff date: 08 August 2016).",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+            "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O2",
+            "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+            "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          }
+        ],
+        "analysis_list": [
+          {
+            "non_inferiority_type": "Superiority or Other (legacy)",
+            "method": "Miettinen & Nurminen Method",
+            "param_type": "Difference in Percentages",
+            "groups_desc": "",
+            "method_desc": "",
+            "estimate_desc": "",
+            "p_value_desc": ""
+          }
+        ]
+      },
+      {
+        "type": "Primary",
+        "title": "Part 2 Cohorts D4 and H: Objective Response Rate (ORR)",
+        "description": "For participants who demonstrated a confirmed response (Complete Response [CR]: Disappearance of all target lesions or Partial Response [PR]: At least a 30% decrease in the sum of diameters of target lesions) per RECIST 1.1. Per RECIST 1.1, DOR was defined as the time from first documented evidence of CR or PR until disease progression or death. DOR was assessed by BICR.",
+        "time_frame": "Up to approximately 2 years",
+        "population": "The analysis population consisted of all treated Cohort D4 and Cohort H participants (database cutoff date: 07 November 2016). One Cohort H participant was excluded from the efficacy analysis population due to a protocol violation. This participant did not have non-small cell lung cancer.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Part 2 Cohorts D4 & H (Pembro 2mg/kg+I)",
+            "description": "Cohort D4 and Cohort H participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle (at the recommended Phase 2 dose determined in Cohort D)."
+          }
+        ],
+        "analysis_list": [
+          {
+            "non_inferiority_type": "Superiority",
+            "method": "Exact binomial distribution for testing",
+            "param_type": "",
+            "groups_desc": "",
+            "method_desc": "HO: ORR ≤20% versus H1: ORR >20%",
+            "estimate_desc": "",
+            "p_value_desc": ""
+          }
+        ]
+      },
+      {
+        "type": "Primary",
+        "title": "All Cohorts: Number of Participants Who Experienced a Dose-limiting Toxicity (DLT)",
+        "description": "DLTs were assessed using the National Cancer Institute Common Terminology Criteria for Adverse Events version 4. A DLT was defined as any of the following events: Grade 4 non-hematologic toxicity (not laboratory); Grade 4 hematologic toxicity lasting ≥7 days; Grade 3 non-hematologic toxicity (not laboratory, specifically nausea, vomiting and diarrhea) lasting >3 days despite optimal supportive care; Any Grade 3 or Grade 4 non-hematologic laboratory value requiring treatment or hospitalization, or persisting for >1 week; Febrile neutropenia Grade 3 or Grade 4; Qualifying thrombocytopenia <25,000/mm^3; Prolonged delay (>2 weeks) in initiating Cycle 2 due to treatment-related toxicity; Missing >10% of erlotinib or gefitinib doses as a result of adverse events (AEs) during the DLT window of observation; or Grade 5 toxicity.",
+        "time_frame": "Cycle 1 (Up to 21 days)",
+        "population": "The DLT evaluable population consisted of all participants who completed the first cycle of study treatment or who discontinued from the study due to a drug-related AE.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Part1 Cohort A2 (Pembro 2 mg/kg+Paclitaxel [Pa]+Carboplatin [C])",
+            "description": "Cohort A2 participants received pembrolizumab (Pembro 2 mg/kg) via intravenous (IV) infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C Area Under the Curve [AUC] 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O2",
+            "title": "Part1 Cohort A10 (Pembro10mg/kg+Pa+C)",
+            "description": "Cohort A10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O3",
+            "title": "Part 1 Cohort B2 (Pembro 2mg/kg+Pa+C+Bevacizumab [B])",
+            "description": "Cohort B2 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (B 15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O4",
+            "title": "Part 1 Cohort B10 (Pembro 10 mg/kg+Pa+C+B)",
+            "description": "Cohort B10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS paclitaxel (Pa 200 mg/m^2 via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS bevacizumab (B 15 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O5",
+            "title": "Part 1 Cohort C2 (Pembro 2 mg/kg+Pemetrexed [Pe]+C)",
+            "description": "Cohort C2 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O6",
+            "title": "Part 1 Cohort C10 (Pembro 10 mg/kg+Pe+C)",
+            "description": "Cohort C10 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 6 [6 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O7",
+            "title": "Part 1 Cohort D1 (Pembro 10mg/kg+Ipilimumab [I])",
+            "description": "Cohort D1 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS iIpilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O8",
+            "title": "Part 1 Cohort D2 (Pembro 10 mg/kg+I)",
+            "description": "Cohort D2 participants received pembrolizumab (Pembro 10 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 3 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O9",
+            "title": "Part 1 Cohort D4 (Pembro 2 mg/kg+I)",
+            "description": "Cohort D4 participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O10",
+            "title": "Part 1 Cohort E (Pembro 2 mg/kg+Erlotinib)",
+            "description": "Cohort E participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS erlotinib (E 150 mg) via oral tablet once a day on every day of each 3-week cycle."
+          },
+          {
+            "group_id": "O11",
+            "title": "Part 1 Cohort F (Pembro 2 mg/kg+Gefitinib)",
+            "description": "Cohort F participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS gefitinib (G 250 mg) via oral tablet once a day on every day of each 3-week cycle."
+          },
+          {
+            "group_id": "O12",
+            "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+            "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O13",
+            "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+            "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O14",
+            "title": "Part 2 Cohort H (Pembro 2 mg/kg+I)",
+            "description": "Cohort H participants received pembrolizumab (Pembro 2 mg/kg) via IV infusion on Day 1 of each 3-week cycle PLUS ipilimumab (I 1 mg/kg) via IV infusion on Day 1 of each 3-week cycle (at the recommended Phase 2 dose determined in Cohort D)."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Part 2 Cohorts G+ and G-: Progression-Free Survival (PFS)",
+        "description": "PFS was defined as the time from randomization to the first documented disease progression, or death due to any cause, whichever occurred first. Per RECIST 1.1, progressive disease was defined as at least a 20% increase in the sum of diameters of target lesions. In addition to the relative increase of 20%, the sum must also demonstrate an absolute increase of at least 5 mm. The appearance of one or more new lesions was also considered progression. PFS was assessed by BICR.",
+        "time_frame": "Up to approximately 2 years",
+        "population": "The analysis population consisted of all randomized Cohort G participants (database cutoff date: 19 August 2019).",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+            "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O2",
+            "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+            "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          }
+        ],
+        "analysis_list": [
+          {
+            "non_inferiority_type": "Superiority or Other (legacy)",
+            "method": "Log Rank",
+            "param_type": "Hazard Ratio (HR)",
+            "groups_desc": "",
+            "method_desc": "One-sided p-value based on log-rank test",
+            "estimate_desc": "",
+            "p_value_desc": ""
+          }
+        ]
+      },
+      {
+        "type": "Secondary",
+        "title": "Part 2 Cohorts G+ and G-: Overall Survival (OS)",
+        "description": "OS was defined as the time from randomization to death due to any cause.",
+        "time_frame": "Up to approximately 2 years",
+        "population": "The analysis population consisted of all randomized Cohort G participants (database cutoff date: 19 August 2019).",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+            "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O2",
+            "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+            "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          }
+        ],
+        "analysis_list": [
+          {
+            "non_inferiority_type": "Superiority or Other (legacy)",
+            "method": "Log Rank",
+            "param_type": "Hazard Ratio (HR)",
+            "groups_desc": "",
+            "method_desc": "One-sided p-value based on log-rank test",
+            "estimate_desc": "",
+            "p_value_desc": ""
+          }
+        ]
+      },
+      {
+        "type": "Secondary",
+        "title": "Part 2 Cohorts G+ and G-: Duration of Response (DOR)",
+        "description": "For participants who demonstrated a confirmed response (Complete Response [CR]: Disappearance of all target lesions or Partial Response [PR]: At least a 30% decrease in the sum of diameters of target lesions) per RECIST 1.1. Per RECIST 1.1, DOR was defined as the time from first documented evidence of CR or PR until disease progression or death. DOR was assessed by BICR.",
+        "time_frame": "Up to approximately 2 years",
+        "population": "The analysis population consisted of all randomized Cohort G participants who experienced a confirmed response (CR or PR); (database cutoff date: 19 August 2019).",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Part 2 Cohort G+ (Pembro 200 mg+Pe+C)",
+            "description": "Cohort G+ participants received pembrolizumab (Pembro 200 mg) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle."
+          },
+          {
+            "group_id": "O2",
+            "title": "Part 2 Cohort G- (Placebo+Pe+C)",
+            "description": "Cohort G- participants received placebo (normal saline solution) via IV infusion on Day 1 of each 3-week cycle PLUS pemetrexed (Pe 500 mg/m^2) via IV infusion on Day 1 of each 3-week cycle PLUS carboplatin (C AUC 5 [5 mg/mL/min]) via IV infusion on Day 1 of each 3-week cycle."
+          }
+        ],
+        "analysis_list": []
+      }
+    ],
+    "keywords": [
+      "PD-1",
+      "PD1",
+      "Programmed Cell Death-1",
+      "Programmed Cell Death 1",
+      "Chemotherapy",
+      "Pemetrexed",
+      "Paclitaxel",
+      "Bevacizumab",
+      "Erlotinib",
+      "Gefitinib",
+      "Ipilimumab",
+      "Carboplatin"
+    ],
+    "conditions": [
+      "Non-small Cell Lung Carcinoma"
+    ],
+    "location_countries": []
+  }
+]

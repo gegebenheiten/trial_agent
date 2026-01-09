@@ -1,0 +1,9 @@
+StudyID,Drug_Name,Molecule_Size,SMILES,ECFP6,SELFIES,Is_Biosimilar,F_bioav,K_a,C_Max,T_Max,AUC,V_d,V_ss,Cl,T_half,K_el,Cl_R,Cl_H,Target_Engage,Biochem_Change,Physio_Change,Imaging_Biomarker,Molecular_EP,EC50,Emax,Hill_Coeff,AUC_IC50,Excipients,ADA_Positive,nAb_Positive
+NCT02039674,Pembrolizumab,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Paclitaxel,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Carboplatin,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Bevacizumab,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Pemetrexed,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Ipilimumab,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Erlotinib,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT02039674,Gefitinib,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
