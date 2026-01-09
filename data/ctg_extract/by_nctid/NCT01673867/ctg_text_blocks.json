@@ -1,0 +1,357 @@
+[
+  {
+    "nct_id": "NCT01673867",
+    "brief_title": "Study of BMS-936558 (Nivolumab) Compared to Docetaxel in Previously Treated Metastatic Non-squamous NSCLC",
+    "official_title": "An Open-Label Randomized Phase III Trial of BMS-936558 (Nivolumab) Versus Docetaxel in Previously Treated Metastatic Non-squamous Non-small Cell Lung Cancer (NSCLC)",
+    "brief_summary": "The purpose of the study is to compare the overall survival of BMS-936558 (Nivolumab) as compared with Docetaxel in subjects with non-squamous cell non-small cell lung cancer (NSCLC) after failure of prior platinum-based chemotherapy",
+    "detailed_description": "CheckMate 057: CHECKpoint pathway and nivoluMAb clinical Trial Evaluation 057",
+    "eligibility_criteria": "Inclusion Criteria: - Men & women ≥18 years of age - Subjects with histologically or cytologically-documented non-squamous cell NSCLC who present with Stage IIIB/IV disease or recurrent or progressive disease following multimodal therapy (radiation therapy, surgical resection, or definitive chemoradiation therapy for locally advanced disease) and who will receive study therapy as second or third line of treatment for advanced disease - Disease recurrence or progression during/after one prior platinum doublet-based chemotherapy regimen for advanced or metastatic disease - Measurable disease by Computed tomography (CT)/Magnetic resonance imaging (MRI) per RECIST 1.1 criteria - Eastern Cooperative Oncology Group (ECOG) performance status ≤1 - A formalin fixed, paraffin-embedded (FFPE) tumor tissue block or unstained slides of tumor sample (archival or recent) must be available for biomarker evaluation. Specimens must be received by the central lab prior to randomization. Biopsy should be excisional, incisional or core needle. Fine needle aspiration is insufficient Exclusion Criteria: - Subjects with untreated central nervous system (CNS) metastases are excluded. Subjects are eligible if CNS metastases are asymptomatic or treated and subjects are neurologically returned to baseline for at least 2 weeks prior to enrollment. In addition, subjects must be either off corticosteroids, or on a stable or decreasing dose of ≤10mg daily prednisone (or equivalent) - Subjects with carcinomatous meningitis - Subjects with active or recent history of known or suspected autoimmune disease. Subjects with Type 1 diabetes mellitus, hypothyroidism only requiring hormone replacement, or skin disorders (vitiligo, psoriasis, or alopecia) not requiring systemic treatment are permitted to enroll - Subjects with a condition requiring systemic treatment with either corticosteroids or other immunosuppressive medications within 14 days of randomization - Prior therapy with anti-programmed death-1 (anti-PD-1), anti-programmed cell death ligand 1 (anti-PD-L1), anti-programmed cell death ligand 2 (anti-PD-L2), anti-cluster of differentiation 137 (anti-CD137), or anti-Cytotoxic T lymphocyte-associated antigen 4 (anti-CTLA-4) antibody (including Ipilimumab or any other antibody or drug specifically targeting T-cell co-stimulation or checkpoint pathways) - Prior treatment with Docetaxel - Treatment with any investigational agent within 14 days of first administration of study treatment Other protocol-defined inclusion/exclusion criteria apply",
+    "design_info": {
+      "study_type": "Interventional",
+      "phase": "Phase 3",
+      "allocation": "Randomized",
+      "intervention_model": "Parallel Assignment",
+      "masking": "None (Open Label)",
+      "primary_purpose": "Treatment",
+      "number_of_arms": "2",
+      "enrollment": "582",
+      "enrollment_type": "actual"
+    },
+    "arm_groups": [
+      {
+        "label": "Arm A: Nivolumab",
+        "type": "Experimental",
+        "description": "Nivolumab 3 mg/kg solution intravenously (IV) every 2 weeks until documented disease progression, discontinuation due to toxicity, withdrawal of consent or the study ends. Eligible patients may receive nivolumab at 480mg every 4 weeks until documented disease progression, discontinuation, withdrawal of consent or the study ends."
+      },
+      {
+        "label": "Arm B: Docetaxel",
+        "type": "Active Comparator",
+        "description": "Docetaxel 75 mg/m^2 concentrate for solution for intravenous infusion every 3 weeks until documented disease progression, discontinuation due to toxicity, withdrawal of consent or the study ends. Eligible patients may receive nivolumab at 480mg every 4 weeks until documented disease progression, discontinuation, withdrawal of consent or the study ends."
+      }
+    ],
+    "interventions": [
+      {
+        "type": "biological",
+        "name": "Nivolumab",
+        "description": "",
+        "other_names": [
+          "BMS-936558 (Anti-PD1)"
+        ],
+        "labels": [
+          "Arm A: Nivolumab"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Docetaxel",
+        "description": "",
+        "other_names": [
+          "Taxotere®"
+        ],
+        "labels": [
+          "Arm B: Docetaxel"
+        ]
+      }
+    ],
+    "primary_outcomes": [
+      {
+        "measure": "Overall Survival (OS) Time in Months for All Randomized Participants at Primary Endpoint",
+        "time_frame": "Randomization until 413 deaths, up to March 2015 (approximately 29 months)",
+        "description": "Overall survival was defined as the time from randomization to the date of death. A participant who has not died will be censored at last known date alive. OS will be followed continuously while participants are on the study drug and every 3 months via in-person or phone contact after participants discontinue the study drug. Median and hazard ratio computed using Kaplan-Meier method."
+      }
+    ],
+    "secondary_outcomes": [
+      {
+        "measure": "Objective Response Rate (ORR)",
+        "time_frame": "From randomization to date of objectively documented progression (up to approximately 110 months)",
+        "description": "ORR was defined as the percentage of participants whose Best Overall Response (BOR) was a confirmed Complete Response (CR) or Partial Response (PR). BOR was defined as the best investigator-assessed response designation, recorded between the date of randomization and the date of objectively documented progression per Response Evaluation Criteria in Solid Tumors version 1.1 (RECIST v1.1) or the date of subsequent anti-cancer therapy (excluding on-treatment palliative radiotherapy of non-target bone lesions or Central Nervous System (CNS) lesions), whichever occurred first. CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm. PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters. CR+PR, confidence interval based on the Clopper and Pearson method."
+      },
+      {
+        "measure": "Time To Objective Response (TTOR)",
+        "time_frame": "From randomization to the date of first confirmed response (up to approximately 110 months)",
+        "description": "Time to Objective Response for participants demonstrating a response (either CR or PR) was defined as the time from the date of randomization to the date of the first confirmed response. CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm.; PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters."
+      },
+      {
+        "measure": "Duration of Objective Response (DOOR)",
+        "time_frame": "From randomization to date of first documented tumor progression or death due to any cause, whichever occurred first (up to approximately 110 months)",
+        "description": "DOR was defined as the time from the date of first confirmed response to the date of the first documented tumor progression (per RECIST v1.1), as determined by the investigator, or death due to any cause, whichever occurred first. DOR was evaluated only for confirmed responders (i.e. participants with confirmed CR or PR). CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm.; PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters. Participants who neither progressed nor died were censored on the date of their last evaluable tumor assessment. Median computed using Kaplan-Meier method."
+      },
+      {
+        "measure": "Progression-Free Survival (PFS)",
+        "time_frame": "From randomization to first confirmed response to the date of the first documented tumor progression or death due to any cause, whichever occurred first (up to approximately 110 months)",
+        "description": "PFS was defined as the time from randomization to the date of the first documented tumor progression (per RECIST 1.1) or death due to any cause. Participants who died without a reported prior progression were considered to have progressed on the date of their death. Progression will be assessed every 6 weeks (from the first on-study radiographic assessment) until disease progression is noted. Progressive disease was defined as least a 20% increase in the sum of diameters of target lesions, taking as reference the smallest sum on study. In addition to the relative increase of 20%, the sum must also demonstrate an absolute increase of at least 5 mm. The appearance of one or more new lesions is also considered progression. Median computed using the Kaplan-Meier method."
+      },
+      {
+        "measure": "Percentage of Participants Experiencing Disease-Related Symptom Improvement by Week 12",
+        "time_frame": "Randomization to Week 12",
+        "description": "Disease-related symptom improvement rate by Week 12 was defined as the percentage of randomized participants who had a 10 point or greater decrease from baseline in average symptom burden index score at any time between randomization and Week 12. The participant portion of the Lung Cancer Symptom Scale (LCSS) consisted of 6 symptom-specific questions that addressed cough, dyspnea, fatigue, pain, hemoptysis, and anorexia, plus 3 summary items on symptom distress, interference with activity level, and global health-related Quality of Life (QoL). The scores range from 0 to 100, with 0 representing the best possible score and 100 being the worst possible score. The average symptom burden index score at each assessment was defined as the mean of the 6 symptom-specific questions of the LCSS. 95% CIs were computed using Clopper-Pearson Method."
+      },
+      {
+        "measure": "Overall Survival (OS) by PD-L1 Expression at Baseline",
+        "time_frame": "From randomization to the date of death or last known date alive (up to approximately 110 months)",
+        "description": "Overall survival was defined as the time from randomization to the date of death. A participant who has not died will be censored at last known date alive. Overall Survival time was measured in months for all randomized participants grouped by their baseline PD-L1 expression level. PD-L1 expression in participants was defined as the percent of disease tumor cells demonstrating plasma membrane PD-L1 staining of any intensity using an immunohistochemistry (IHC) assay. Median computed using the Kaplan-Meier method."
+      },
+      {
+        "measure": "Objective Response Rate (ORR) by PD-L1 Expression at Baseline",
+        "time_frame": "From randomization to date of objectively documented progression (up to approximately 110 months)",
+        "description": "ORR was defined as the percentage of all randomized participants whose Best Overall Response (BOR) was a confirmed Complete Response (CR) or Partial Response (PR). CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm.; PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters. CR+PR, confidence interval based on the Clopper and Pearson method. ORR was reported for all randomized participants grouped by their baseline PD-L1 expression level. PD-L1 expression in participants was defined as the percent of disease tumor cells demonstrating plasma membrane PD-L1 staining of any intensity using an immunohistochemistry (IHC) assay."
+      }
+    ],
+    "participant_flow": {
+      "recruitment_details": "",
+      "pre_assignment_details": "",
+      "groups": [
+        {
+          "group_id": "P1",
+          "title": "Nivolumab",
+          "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+        },
+        {
+          "group_id": "P2",
+          "title": "Docetaxel",
+          "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+        }
+      ]
+    },
+    "baseline_results": {
+      "population": "All randomized participants",
+      "groups": [
+        {
+          "group_id": "B1",
+          "title": "Nivolumab",
+          "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+        },
+        {
+          "group_id": "B2",
+          "title": "Docetaxel",
+          "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+        },
+        {
+          "group_id": "B3",
+          "title": "Total",
+          "description": "Total of all reporting groups"
+        }
+      ]
+    },
+    "results_outcomes": [
+      {
+        "type": "Primary",
+        "title": "Overall Survival (OS) Time in Months for All Randomized Participants at Primary Endpoint",
+        "description": "Overall survival was defined as the time from randomization to the date of death. A participant who has not died will be censored at last known date alive. OS will be followed continuously while participants are on the study drug and every 3 months via in-person or phone contact after participants discontinue the study drug. Median and hazard ratio computed using Kaplan-Meier method.",
+        "time_frame": "Randomization until 413 deaths, up to March 2015 (approximately 29 months)",
+        "population": "All randomized participants",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": [
+          {
+            "non_inferiority_type": "Superiority",
+            "method": "Log Rank",
+            "param_type": "Hazard Ratio (HR)",
+            "groups_desc": "",
+            "method_desc": "",
+            "estimate_desc": "HR = Nivolumab over docetaxel",
+            "p_value_desc": ""
+          }
+        ]
+      },
+      {
+        "type": "Secondary",
+        "title": "Objective Response Rate (ORR)",
+        "description": "ORR was defined as the percentage of participants whose Best Overall Response (BOR) was a confirmed Complete Response (CR) or Partial Response (PR). BOR was defined as the best investigator-assessed response designation, recorded between the date of randomization and the date of objectively documented progression per Response Evaluation Criteria in Solid Tumors version 1.1 (RECIST v1.1) or the date of subsequent anti-cancer therapy (excluding on-treatment palliative radiotherapy of non-target bone lesions or Central Nervous System (CNS) lesions), whichever occurred first. CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm. PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters. CR+PR, confidence interval based on the Clopper and Pearson method.",
+        "time_frame": "From randomization to date of objectively documented progression (up to approximately 110 months)",
+        "population": "All randomized participants",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Time To Objective Response (TTOR)",
+        "description": "Time to Objective Response for participants demonstrating a response (either CR or PR) was defined as the time from the date of randomization to the date of the first confirmed response. CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm.; PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters.",
+        "time_frame": "From randomization to the date of first confirmed response (up to approximately 110 months)",
+        "population": "All randomized participants who demonstrate partial response (PR) or complete response (CR)",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Duration of Objective Response (DOOR)",
+        "description": "DOR was defined as the time from the date of first confirmed response to the date of the first documented tumor progression (per RECIST v1.1), as determined by the investigator, or death due to any cause, whichever occurred first. DOR was evaluated only for confirmed responders (i.e. participants with confirmed CR or PR). CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm.; PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters. Participants who neither progressed nor died were censored on the date of their last evaluable tumor assessment. Median computed using Kaplan-Meier method.",
+        "time_frame": "From randomization to date of first documented tumor progression or death due to any cause, whichever occurred first (up to approximately 110 months)",
+        "population": "All randomized participants who demonstrate partial response (PR) or complete response (CR)",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Progression-Free Survival (PFS)",
+        "description": "PFS was defined as the time from randomization to the date of the first documented tumor progression (per RECIST 1.1) or death due to any cause. Participants who died without a reported prior progression were considered to have progressed on the date of their death. Progression will be assessed every 6 weeks (from the first on-study radiographic assessment) until disease progression is noted. Progressive disease was defined as least a 20% increase in the sum of diameters of target lesions, taking as reference the smallest sum on study. In addition to the relative increase of 20%, the sum must also demonstrate an absolute increase of at least 5 mm. The appearance of one or more new lesions is also considered progression. Median computed using the Kaplan-Meier method.",
+        "time_frame": "From randomization to first confirmed response to the date of the first documented tumor progression or death due to any cause, whichever occurred first (up to approximately 110 months)",
+        "population": "All randomized participants",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Percentage of Participants Experiencing Disease-Related Symptom Improvement by Week 12",
+        "description": "Disease-related symptom improvement rate by Week 12 was defined as the percentage of randomized participants who had a 10 point or greater decrease from baseline in average symptom burden index score at any time between randomization and Week 12. The participant portion of the Lung Cancer Symptom Scale (LCSS) consisted of 6 symptom-specific questions that addressed cough, dyspnea, fatigue, pain, hemoptysis, and anorexia, plus 3 summary items on symptom distress, interference with activity level, and global health-related Quality of Life (QoL). The scores range from 0 to 100, with 0 representing the best possible score and 100 being the worst possible score. The average symptom burden index score at each assessment was defined as the mean of the 6 symptom-specific questions of the LCSS. 95% CIs were computed using Clopper-Pearson Method.",
+        "time_frame": "Randomization to Week 12",
+        "population": "All randomized participants",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Overall Survival (OS) by PD-L1 Expression at Baseline",
+        "description": "Overall survival was defined as the time from randomization to the date of death. A participant who has not died will be censored at last known date alive. Overall Survival time was measured in months for all randomized participants grouped by their baseline PD-L1 expression level. PD-L1 expression in participants was defined as the percent of disease tumor cells demonstrating plasma membrane PD-L1 staining of any intensity using an immunohistochemistry (IHC) assay. Median computed using the Kaplan-Meier method.",
+        "time_frame": "From randomization to the date of death or last known date alive (up to approximately 110 months)",
+        "population": "All randomized participants who had a tumor biopsy assessed for PD-L1 expression",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Objective Response Rate (ORR) by PD-L1 Expression at Baseline",
+        "description": "ORR was defined as the percentage of all randomized participants whose Best Overall Response (BOR) was a confirmed Complete Response (CR) or Partial Response (PR). CR = Disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to < 10 mm.; PR = At least a 30% decrease in the sum of diameters of target lesions, taking, as reference, the baseline sum diameters. CR+PR, confidence interval based on the Clopper and Pearson method. ORR was reported for all randomized participants grouped by their baseline PD-L1 expression level. PD-L1 expression in participants was defined as the percent of disease tumor cells demonstrating plasma membrane PD-L1 staining of any intensity using an immunohistochemistry (IHC) assay.",
+        "time_frame": "From randomization to date of objectively documented progression (up to approximately 110 months)",
+        "population": "All randomized participants who had a tumor biopsy assessed for PD-L1 expression",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Post-Hoc",
+        "title": "Overall Survival (OS) - Extended Collection",
+        "description": "Overall survival was defined as the time from randomization to the date of death. A participant who has not died will be censored at last known date alive. OS will be followed continuously while participants are on the study drug and every 3 months via in-person or phone contact after participants discontinue the study drug. Median computed using Kaplan-Meier method. Note: This outcome measure represents an updated version of the primary endpoint to include additional data collection that has occurred after the primary completion date. (Assessments were made until December 17, 2021).",
+        "time_frame": "From randomization to the date of death or last known date alive (up to approximately 110 months)",
+        "population": "All randomized participants",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Nivolumab",
+            "description": "Nivolumab 3 mg/kg solution administered intravenously every 2 weeks. Eligible participants transitioned to nivolumab 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          },
+          {
+            "group_id": "O2",
+            "title": "Docetaxel",
+            "description": "Docetaxel 75mg/m^2 solution administered intravenously every 3 weeks. Eligible participants transitioned to nivolumab 3 mg/kg every 2 weeks or 480 mg every 4 weeks. Participants treated until disease progression, discontinuation due to toxicity, withdrawal of consent or end of study."
+          }
+        ],
+        "analysis_list": []
+      }
+    ],
+    "keywords": [],
+    "conditions": [
+      "Non-Squamous Cell Non-small Cell Lung Cancer"
+    ],
+    "location_countries": [
+      "Argentina",
+      "Australia",
+      "Austria",
+      "Brazil",
+      "Canada",
+      "Chile",
+      "Czechia",
+      "France",
+      "Germany",
+      "Hong Kong",
+      "Hungary",
+      "Italy",
+      "Mexico",
+      "Norway",
+      "Peru",
+      "Poland",
+      "Romania",
+      "Russia",
+      "Singapore",
+      "Spain",
+      "Switzerland",
+      "United States"
+    ]
+  }
+]

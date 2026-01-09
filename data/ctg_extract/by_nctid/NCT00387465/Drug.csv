@@ -1,0 +1,4 @@
+StudyID,Drug_Name,Molecule_Size,SMILES,ECFP6,SELFIES,Is_Biosimilar,F_bioav,K_a,C_Max,T_Max,AUC,V_d,V_ss,Cl,T_half,K_el,Cl_R,Cl_H,Target_Engage,Biochem_Change,Physio_Change,Imaging_Biomarker,Molecular_EP,EC50,Emax,Hill_Coeff,AUC_IC50,Excipients,ADA_Positive,nAb_Positive
+NCT00387465,Azacitidine 30mg/m2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT00387465,Entinostat,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+NCT00387465,Azacitidine 40mg/m2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

@@ -1,0 +1,401 @@
+[
+  {
+    "nct_id": "NCT00387465",
+    "brief_title": "Azacitidine and Entinostat in Treating Patients With Recurrent Advanced Non-Small Cell Lung Cancer",
+    "official_title": "A Phase I/II Study of Entinostat in Combination With 5-Azacytidine in Patients With Recurrent Advanced Non-Small Cell Lung Cancer",
+    "brief_summary": "This phase I/II trial is studying the side effects and best dose of azacitidine when given together with entinostat and to see how well they work in treating patients with recurrent advanced non-small cell lung cancer. Azacitidine and entinostat may stop the growth of tumor cells by blocking some of the enzymes needed for cell growth. Giving azacitidine together with entinostat may kill more tumor cells.",
+    "detailed_description": "PRIMARY OBJECTIVES: I. To assess safety, characterize toxicities, and determine the maximum tolerated dose of 5-AZA (azacitidine) with a fixed-dose of entinostat in patients with recurrent advanced non-small cell lung cancer (NSCLC). (Phase I) II. To determine the objective response rate of 5-AZA and entinostat in patients with recurrent NSCLC. (Phase II) SECONDARY OBJECTIVES: I. To determine the pharmacokinetic profile of 5-AZA and entinostat in patients with recurrent NSCLC. II. To assess the pharmacodynamic effects of 5-AZA and entinostat on deoxyribonucleic acid (DNA) methylation, histone acetylation, and gene re-expression in patients with recurrent NSCLC through analysis of blood, sputum and tissue biopsies. III. To explore the effect of 5-AZA and entinostat on progression-free and overall survival in patients with recurrent advanced non-small cell lung cancer. IV. To explore the differing response rates and progression-free survivals of two schedules of 5-AZA and entinostat in patients with recurrent advanced non-small cell lung cancer. OUTLINE: This is a multicenter, phase I, dose-escalation study of azacitidine followed by an open-label, phase II study. Patients receive azacitidine subcutaneously (SC) on days 1-6 and 8-10 and entinostat orally (PO) on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity. After completion of study treatment, patients are followed up every 3 months.",
+    "eligibility_criteria": "Inclusion Criteria: - Patients must have histologically or cytologically confirmed metastatic or unresectable NSCLC - Patient must have failed at least one previous chemotherapy regimen - Patients must have measurable disease, defined as at least one lesion that can be accurately measured in at least one dimension (longest diameter to be recorded) as >= 20 mm with conventional techniques or as >= 10 mm with spiral computed tomography (CT) scan - Life expectancy of greater than 12 weeks - Eastern Cooperative Oncology Group (ECOG) performance status (PS) =< 2 (Karnofsky >= 60%) - Leukocytes >= 3,000/mcL - Absolute neutrophil count >= 1,500/mcL - Platelet count >= 100,000/mcL - Total bilirubin within normal institutional limits - Aspartate aminotransferase (AST) (serum glutamic oxaloacetic transaminase [SGOT] and alanine aminotransferase (ALT) (serum glutamic pyruvate transaminase [SGPT]) =< 2.5 x upper limit of normal - Creatinine within normal institutional limits OR creatinine clearance >= 60 mL/min/1.73m^2 for patients with creatinine levels above institutional normal - Women of child-bearing potential and men must agree to use adequate contraception (hormonal or barrier method of birth control; abstinence) prior to study entry and for the duration of study participation; should a woman become pregnant or suspect she is pregnant while participating in this study, she should inform her treating physician immediately - Ability to understand and the willingness to sign a written informed consent document - Patients who have a major objective response to treatment on this protocol, and who experience progression of disease at least 1 year after completion of protocol consent and therapy, may be re-treated at the previously effective dose and schedule Exclusion Criteria: - Patients who have had chemotherapy or radiotherapy within 4 weeks (6 weeks for nitrosoureas or mitomycin C) prior to entering the study or those who have not recovered from adverse events due to agents administered more than 4 weeks earlier - Patients may not be receiving any other investigational agents - Patients with uncontrolled brain metastases; patients with brain metastases must have stable neurologic status following local therapy (surgery or radiation) for at least 4 weeks, and must be without neurologic dysfunction that would confound the evaluation of neurologic and other adverse events - Patients with liver metastases that replace greater than 30% of the liver parenchyma - History of allergic reactions attributed to compounds of similar chemical or biologic composition to entinostat, 5-AZA, mannitol or other agents used in the study - Uncontrolled intercurrent illness including, but not limited to, ongoing or active infection, symptomatic congestive heart failure, unstable angina pectoris, cardiac arrhythmia, or psychiatric illness/social situations that would limit compliance with study requirements - Pregnant women are excluded from this study; breastfeeding should be discontinued if the mother is treated on this protocol - Human immunodeficiency virus (HIV)-positive patients on combination antiretroviral therapy are ineligible",
+    "design_info": {
+      "study_type": "Interventional",
+      "phase": "Phase 1/Phase 2",
+      "allocation": "Randomized",
+      "intervention_model": "Single Group Assignment",
+      "masking": "None (Open Label)",
+      "primary_purpose": "Treatment",
+      "number_of_arms": "3",
+      "enrollment": "94",
+      "enrollment_type": "actual"
+    },
+    "arm_groups": [
+      {
+        "label": "Phase I - 30mg/m2 Azacitidine",
+        "type": "Experimental",
+        "description": "Patients receive Azacitidine 30mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+      },
+      {
+        "label": "Phase I - 40mg/m2 Azacitidine",
+        "type": "Experimental",
+        "description": "Patients receive azacitidine 40mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+      },
+      {
+        "label": "Phase II Arm",
+        "type": "Experimental",
+        "description": "Patients receive azacitidine 40mg/m2 subcutaneously (SQ) on days 1-6 and 8-10 and entinostat 7mg PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+      }
+    ],
+    "interventions": [
+      {
+        "type": "drug",
+        "name": "Azacitidine 30mg/m2",
+        "description": "Azacitidine 30mg/m2 subcutaneously (SQ)",
+        "other_names": [
+          "5 AZC",
+          "5-AC",
+          "5-Azacytidine",
+          "5-AZC",
+          "AZACITIDINE",
+          "Azacytidine",
+          "Azacytidine, 5-",
+          "Ladakamycin",
+          "Mylosar",
+          "U-18496",
+          "Vidaza"
+        ],
+        "labels": [
+          "Phase I - 30mg/m2 Azacitidine"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Entinostat",
+        "description": "7mg by mouth (PO) on days 3 and 10 of each cycle",
+        "other_names": [
+          "HDAC inhibitor SNDX-275",
+          "MS 27-275",
+          "MS-275",
+          "SNDX-275"
+        ],
+        "labels": [
+          "Phase I - 30mg/m2 Azacitidine",
+          "Phase I - 40mg/m2 Azacitidine",
+          "Phase II Arm"
+        ]
+      },
+      {
+        "type": "drug",
+        "name": "Azacitidine 40mg/m2",
+        "description": "Azacitidine 40mg/m2 SQ",
+        "other_names": [
+          "5 AZC",
+          "5-AC",
+          "5-Azacytidine",
+          "5-AZC",
+          "AZACITIDINE",
+          "Azacytidine",
+          "Azacytidine, 5-",
+          "Ladakamycin",
+          "Mylosar",
+          "U-18496",
+          "Vidaza"
+        ],
+        "labels": [
+          "Phase I - 40mg/m2 Azacitidine",
+          "Phase II Arm"
+        ]
+      }
+    ],
+    "primary_outcomes": [
+      {
+        "measure": "(Phase I) Maximum Tolerated Dose (MTD) of Azacitidine When Given Together With Entinostat as Determined by Number of Participants Experiencing Dose-limiting Toxicity (DLT)",
+        "time_frame": "Up to 28 days",
+        "description": "DLT is defined by the National Cancer Institute Common Terminology Criteria for Adverse Events (NCI CTCAE) v3.0"
+      },
+      {
+        "measure": "(Phase II) Objective Response Rate After Treatment With Azacitidine and Entinostat as Assessed by Number of Participants With Response After at Least One Cycle of Therapy",
+        "time_frame": "Up to 8 years",
+        "description": "Number of participants with progressive disease (PD), stable disease (SD), complete response (CR), or partial response (PR), as defined by Response Evaluation Criteria in Solid Tumors (RECIST 1.0), after completing at least one cycle of therapy. Per RECIST 1.0, progression is defined as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions; PR is defined as >=30% decrease in the sum of the longest diameter of target lesions, CR is defined as the disappearance of all target lesions."
+      }
+    ],
+    "secondary_outcomes": [
+      {
+        "measure": "Effect of Entinostat and Azacitidine on DNA Methylation and Response",
+        "time_frame": "Baseline and days 10 and 29",
+        "description": "Number of participants with decrease in DNA methylation (\"methylation-signature positive\") on Day 10 or Day 29, and either stable disease or objective response (OR) as defined by RECIST 1.0. Per RECIST 1.0, progression is defined as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions; PR is defined as >=30% decrease in the sum of the longest diameter of target lesions, complete response is defined as disappearance of all target lesions; OR=CR+PR."
+      },
+      {
+        "measure": "Major Objective Response After Immediate Subsequent Therapy as Measured by Number of Participants With PR, SD, PD After at Least 1 Cycle of Subsequent Chemotherapy",
+        "time_frame": "Up to 8 years",
+        "description": "Number of participants with progressive disease (PD), stable disease (SD), or partial response (PR), as defined by Response Evaluation Criteria in Solid Tumors (RECIST 1.0) after at least 1 cycle of subsequent chemotherapy. Per RECIST 1.0, progression is defined as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions; PR is defined as >=30% decrease in the sum of the longest diameter of target lesions."
+      },
+      {
+        "measure": "Overall Survival",
+        "time_frame": "Up to 1 year",
+        "description": "Determined by the method determined by Kaplan and Meier. 95% confidence intervals will be estimated."
+      },
+      {
+        "measure": "Pharmacokinetic Profile of Azacytidine as Measured by Tmax",
+        "time_frame": "Day 1",
+        "description": "Time to maximal concentration of azacitidine in the blood."
+      },
+      {
+        "measure": "Progression-free Survival",
+        "time_frame": "Up to 1 year",
+        "description": "Progression is defined using Response Evaluation Criteria In Solid Tumors Criteria (RECIST v1.0), as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions. Determined by the method determined by Kaplan and Meier. 95% confidence intervals will be estimated."
+      },
+      {
+        "measure": "Pharmacokinetic Profile of Azacitidine as Measured by Cmax",
+        "time_frame": "Day 1",
+        "description": "Maximal concentration (ng/mL) of azacitidine"
+      },
+      {
+        "measure": "Pharmacokinetic Profile of Azacitidine as Measured by AUC (ng*hr/mL)",
+        "time_frame": "Day 1",
+        "description": ""
+      },
+      {
+        "measure": "Average Steady State Trough Concentration (ng/mL) of Entinostat",
+        "time_frame": "Day 10 and 17",
+        "description": ""
+      },
+      {
+        "measure": "Pharmacokinetic Profile of Azacitidine as Measured by Half-life",
+        "time_frame": "Day 1",
+        "description": ""
+      }
+    ],
+    "participant_flow": {
+      "recruitment_details": "",
+      "pre_assignment_details": "49 subjects did not start the study due to screen failure or PI decision.",
+      "groups": [
+        {
+          "group_id": "P1",
+          "title": "Phase I - 30mg/m2 Azacitidine",
+          "description": "Patients receive Azacitidine 30mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+        },
+        {
+          "group_id": "P2",
+          "title": "Phase I - 40mg/m2 Azacitidine",
+          "description": "Patients receive azacitidine 40mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+        },
+        {
+          "group_id": "P3",
+          "title": "Phase II Arm",
+          "description": "Patients receive azacitidine 40mg/m2 subcutaneously (SQ) on days 1-6 and 8-10 and entinostat 7mg PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+        }
+      ]
+    },
+    "baseline_results": {
+      "population": "",
+      "groups": [
+        {
+          "group_id": "B1",
+          "title": "Phase II Arm",
+          "description": "Patients receive azacitidine 40mg/m2 subcutaneously (SQ) on days 1-6 and 8-10 and entinostat 7mg PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+        },
+        {
+          "group_id": "B2",
+          "title": "Phase I - 30mg/m2 Azacitidine",
+          "description": "Patients receive Azacitidine 30mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+        },
+        {
+          "group_id": "B3",
+          "title": "Phase I - 40mg/m2 Azacitidine",
+          "description": "Patients receive azacitidine 40mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+        },
+        {
+          "group_id": "B4",
+          "title": "Total",
+          "description": "Total of all reporting groups"
+        }
+      ]
+    },
+    "results_outcomes": [
+      {
+        "type": "Primary",
+        "title": "(Phase I) Maximum Tolerated Dose (MTD) of Azacitidine When Given Together With Entinostat as Determined by Number of Participants Experiencing Dose-limiting Toxicity (DLT)",
+        "description": "DLT is defined by the National Cancer Institute Common Terminology Criteria for Adverse Events (NCI CTCAE) v3.0",
+        "time_frame": "Up to 28 days",
+        "population": "Only participants in the Phase I arms were analyzed for this outcome measure",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Phase II Arm",
+            "description": "Patients receive azacitidine 40mg/m2 subcutaneously (SQ) on days 1-6 and 8-10 and entinostat 7mg PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          },
+          {
+            "group_id": "O2",
+            "title": "Phase I - 30mg/m2 Azacitidine",
+            "description": "Patients receive Azacitidine 30mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+          },
+          {
+            "group_id": "O3",
+            "title": "Phase I - 40mg/m2 Azacitidine",
+            "description": "Patients receive azacitidine 40mg/m2 SQ and entinostat 7mg PO on days 3 and 10 of each cycle."
+          }
+        ],
+        "analysis_list": [
+          {
+            "non_inferiority_type": "Other",
+            "method": "",
+            "param_type": "Maximum Tolerated Dose",
+            "groups_desc": "",
+            "method_desc": "",
+            "estimate_desc": "MTD of Azacitidine measured in mg/m^2",
+            "p_value_desc": ""
+          }
+        ]
+      },
+      {
+        "type": "Primary",
+        "title": "(Phase II) Objective Response Rate After Treatment With Azacitidine and Entinostat as Assessed by Number of Participants With Response After at Least One Cycle of Therapy",
+        "description": "Number of participants with progressive disease (PD), stable disease (SD), complete response (CR), or partial response (PR), as defined by Response Evaluation Criteria in Solid Tumors (RECIST 1.0), after completing at least one cycle of therapy. Per RECIST 1.0, progression is defined as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions; PR is defined as >=30% decrease in the sum of the longest diameter of target lesions, CR is defined as the disappearance of all target lesions.",
+        "time_frame": "Up to 8 years",
+        "population": "Only participants who received Azacitidine 40mg/m2 and completed at least one cycle of therapy were evaluable for this outcome measure.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Effect of Entinostat and Azacitidine on DNA Methylation and Response",
+        "description": "Number of participants with decrease in DNA methylation (\"methylation-signature positive\") on Day 10 or Day 29, and either stable disease or objective response (OR) as defined by RECIST 1.0. Per RECIST 1.0, progression is defined as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions; PR is defined as >=30% decrease in the sum of the longest diameter of target lesions, complete response is defined as disappearance of all target lesions; OR=CR+PR.",
+        "time_frame": "Baseline and days 10 and 29",
+        "population": "Only participants who received Azacitidine 40mg/m2 (42 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. However, data was evaluable in only 26/42 participants.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Major Objective Response After Immediate Subsequent Therapy as Measured by Number of Participants With PR, SD, PD After at Least 1 Cycle of Subsequent Chemotherapy",
+        "description": "Number of participants with progressive disease (PD), stable disease (SD), or partial response (PR), as defined by Response Evaluation Criteria in Solid Tumors (RECIST 1.0) after at least 1 cycle of subsequent chemotherapy. Per RECIST 1.0, progression is defined as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions; PR is defined as >=30% decrease in the sum of the longest diameter of target lesions.",
+        "time_frame": "Up to 8 years",
+        "population": "Only participants who received 40mg/m2 azacitidine and at least 1 cycle of subsequent chemotherapy (19 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. However, 2/19 deceased prior to imaging and therefore were not evaluable for this outcome measure.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Overall Survival",
+        "description": "Determined by the method determined by Kaplan and Meier. 95% confidence intervals will be estimated.",
+        "time_frame": "Up to 1 year",
+        "population": "Only participants who received Azacitidine 40mg/m2 were evaluable for this outcome measure.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Pharmacokinetic Profile of Azacytidine as Measured by Tmax",
+        "description": "Time to maximal concentration of azacitidine in the blood.",
+        "time_frame": "Day 1",
+        "population": "Only participants who received Azacitidine 40mg/m2 (42 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. Data was not collected from 2/42 participants.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Progression-free Survival",
+        "description": "Progression is defined using Response Evaluation Criteria In Solid Tumors Criteria (RECIST v1.0), as a 20% increase in the sum of the longest diameter of target lesions, or a measurable increase in a non-target lesion, or the appearance of new lesions. Determined by the method determined by Kaplan and Meier. 95% confidence intervals will be estimated.",
+        "time_frame": "Up to 1 year",
+        "population": "Only participants who received Azacitidine 40mg/m2 were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Pharmacokinetic Profile of Azacitidine as Measured by Cmax",
+        "description": "Maximal concentration (ng/mL) of azacitidine",
+        "time_frame": "Day 1",
+        "population": "Only participants who received Azacitidine 40mg/m2 (42 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. Data was not collected from 2/42 participants",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Pharmacokinetic Profile of Azacitidine as Measured by AUC (ng*hr/mL)",
+        "description": "",
+        "time_frame": "Day 1",
+        "population": "Only participants who received Azacitidine 40mg/m2 (42 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. Data was not collected from 2/42 participants.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Average Steady State Trough Concentration (ng/mL) of Entinostat",
+        "description": "",
+        "time_frame": "Day 10 and 17",
+        "population": "Only participants who received Azacitidine 40mg/m2 (42 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. Data was not collected from 2/42 participants.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      },
+      {
+        "type": "Secondary",
+        "title": "Pharmacokinetic Profile of Azacitidine as Measured by Half-life",
+        "description": "",
+        "time_frame": "Day 1",
+        "population": "Only participants who received Azacitidine 40mg/m2 (42 participants) were assessed for this outcome measure. Therefore, data was not collected from the participants in the 30mg/m2 arm from Phase I. Data was not collected from 2/42 participants.",
+        "groups": [
+          {
+            "group_id": "O1",
+            "title": "Azacitidine 40mg/m2 With Entinostat",
+            "description": "Patients receive azacitidine 40mg/m2 SC on days 1-6 and 8-10 and entinostat PO on days 3 and 10. Treatment repeats every 28 days in the absence of disease progression or unacceptable toxicity."
+          }
+        ],
+        "analysis_list": []
+      }
+    ],
+    "keywords": [],
+    "conditions": [
+      "Recurrent Non-Small Cell Lung Carcinoma",
+      "Stage IIIA Non-Small Cell Lung Cancer",
+      "Stage IIIB Non-Small Cell Lung Cancer",
+      "Stage IV Non-Small Cell Lung Cancer"
+    ],
+    "location_countries": [
+      "United States"
+    ]
+  }
+]
