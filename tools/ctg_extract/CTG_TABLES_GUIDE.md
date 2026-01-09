@@ -195,7 +195,7 @@ Legend:
 | Drug_Name | Derived: outcome group title == arm_group_label -> intervention_name (drug-like only); otherwise blank | Yes |
 | Arm_ID | Derived: StudyID + outcome group_id (fallback to normalized title; no groups -> overall) | Yes |
 | Endpoint_Name | CTG direct: clinical_results/outcome_list/outcome/title | Yes |
-| Endpoint_Type | Derived: Primary; Key Secondary = trial's first Secondary outcome; others blank | Yes |
+| Endpoint_Type | Derived: Primary (all); Secondary (up to first 3 secondary outcomes); Key Secondary only when CT.gov outcome type explicitly includes "key"; others blank | Yes |
 | Strategy | LLM (CTG text) | No |
 | EP_P_value | CTG direct: analysis_list serialized as JSON array (analysis_id/groups/method/p/effect/ci) | Yes |
 | Missing_Imput | LLM (CTG text) | No |
@@ -228,6 +228,7 @@ Legend:
 | Date_End | Derived: completion_date or primary_completion_date | Yes |
 | Results_Posted_Or_Updated_Date | Derived: results_first_posted or last_update_posted (Date_Report if column name) | Yes |
 | Study_Status | Derived: normalize overall_status to Complete/ongoing/unknown | Yes |
+| Arm_Group_Type | CTG direct: matched arm_group/arm_group_type; blank if unavailable | Yes |
 | Outcome | LLM (CTG text) | No |
 | Termination | LLM (CTG text) | No |
 | No_Amendment | LLM (CTG text) | No |

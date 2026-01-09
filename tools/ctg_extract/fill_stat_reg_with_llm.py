@@ -4,7 +4,6 @@ Fill Stat_Reg table using the shared CTG LLM interface.
 """
 
 import sys
-from typing import List
 
 from fill_ctg_table_with_llm import PromptConfig, main as fill_main
 
@@ -67,6 +66,19 @@ LLM_FIELDS = [
     "Rare_Disease",
     "Reg_Audit",
     "Consistency_MRCT",
+]
+# study_info, eligibility, design_info, arm_groups, interventions, primary_outcomes, secondary_outcomes
+# participant_flow, baseline_results, baseline_measures, results_outcomes, reported_events
+# keywords, conditions, location_countries
+# endpoint_target, endpoint_matches
+
+TEXT_MODULES = [
+    "design_info",
+    "study_info",
+    "arm_groups",
+    "interventions",
+    "primary_outcomes",
+    "secondary_outcomes",
 ]
 
 # Field-wise rules:
@@ -385,32 +397,11 @@ STAT_REG_NOTES = {
 }
 
 
-def stat_reg_extra_rules(missing_fields: List[str]) -> List[str]:
-    _ = missing_fields
-    return [
-        # General conservatism
-        "- Many SAP details are not in CT.gov. Return empty unless explicitly stated verbatim in TEXT.",
-        "- Do NOT infer anything from the CSV CONTEXT fields (Allocation/Masking etc.). Use TEXT only.",
-        # Allowed normalizations (value only; evidence must quote original phrase)
-        "- You MAY normalize ratios: '2 to 1', '2-1', '2/1' -> output '2:1'.",
-        "- You MAY normalize power percent: '80 percent'/'80%' -> output '80%'.",
-        "- You MAY normalize sidedness: if TEXT says 'one-sided' -> output '1'; 'two-sided' -> output '2'.",
-        "- You MAY normalize alpha if explicitly equivalent: keep as decimal like 0.05; do not derive from p-values.",
-        "- Alpha_Spend_Func mapping allowed: 'O'Brien-Fleming'/'O’Brien Fleming' -> 'OBF'; keep 'Pocock','Lan-DeMets','Shi-Hwang' as-is.",
-        # Endpoint S/C classification guidance
-        "- For Primary_EP_SC / Key_Second_EP_SC: classify as C when endpoint is direct patient benefit (survival, mortality, hospitalization, MACE, symptoms/function, QoL/PRO); "
-        "classify as S when endpoint is intermediate/surrogate (PFS/ORR/pCR/DOR, biomarkers, imaging response, viral load, lab measures). If not clear -> empty.",
-        # Output strictness reminders
-        "- For yes/no style fields, output ONLY 'yes' (never output 'no'); use empty when not supported.",
-        "- Keep outputs short; lists should be semicolon-separated (value) and evidence can be multiple segments separated by ' | '.",
-    ]
-
-
 PROMPT_CONFIG = PromptConfig(
     instructions=INSTRUCTIONS,
     notes=STAT_REG_NOTES,
-    extra_rules_fn=stat_reg_extra_rules,
     llm_fields=LLM_FIELDS,
+    text_modules=TEXT_MODULES,
 )
 
 

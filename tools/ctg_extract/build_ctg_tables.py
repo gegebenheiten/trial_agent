@@ -105,6 +105,7 @@ GROUPS_EXTRA_FIELDS = [
     "group_id_raw",
     "group_title_raw",
     "group_desc_raw",
+    "Arm_Group_Type",
     "N_group",
     "count_male",
     "count_female",
@@ -763,11 +764,92 @@ def parse_results_participant_flow(root: ET.Element) -> Dict[str, object]:
     if flow is None:
         return {}
     groups = parse_results_group_list(flow)
-    return {
-        "recruitment_details": xml_text(flow, "recruitment_details"),
-        "pre_assignment_details": xml_text(flow, "pre_assignment_details"),
-        "groups": groups,
-    }
+    payload: Dict[str, object] = {}
+    recruitment_details = xml_text(flow, "recruitment_details")
+    pre_assignment_details = xml_text(flow, "pre_assignment_details")
+    if recruitment_details:
+        payload["recruitment_details"] = recruitment_details
+    if pre_assignment_details:
+        payload["pre_assignment_details"] = pre_assignment_details
+    if groups:
+        payload["groups"] = groups
+
+    periods: List[Dict[str, object]] = []
+    for period in flow.findall("period_list/period"):
+        period_item: Dict[str, object] = {}
+        period_title = xml_text(period, "title")
+        if period_title:
+            period_item["title"] = period_title
+
+        milestones: List[Dict[str, object]] = []
+        for milestone in period.findall("milestone_list/milestone"):
+            milestone_item: Dict[str, object] = {}
+            milestone_title = xml_text(milestone, "title")
+            if milestone_title:
+                milestone_item["title"] = milestone_title
+            milestone_desc = xml_text(milestone, "description")
+            if milestone_desc:
+                milestone_item["description"] = milestone_desc
+
+            participants_list: List[Dict[str, str]] = []
+            for participant in milestone.findall("participants_list/participants"):
+                entry: Dict[str, str] = {}
+                group_id = (participant.attrib.get("group_id") or "").strip()
+                count = (participant.attrib.get("count") or "").strip()
+                if not count:
+                    count = normalize_whitespace(participant.text or "")
+                if group_id:
+                    entry["group_id"] = group_id
+                if count:
+                    entry["count"] = count
+                if entry:
+                    participants_list.append(entry)
+            if participants_list:
+                milestone_item["participants"] = participants_list
+
+            if milestone_item:
+                milestones.append(milestone_item)
+        if milestones:
+            period_item["milestones"] = milestones
+
+        drop_reasons: List[Dict[str, object]] = []
+        for reason in period.findall("drop_withdraw_reason_list/drop_withdraw_reason"):
+            reason_item: Dict[str, object] = {}
+            reason_title = xml_text(reason, "title")
+            if reason_title:
+                reason_item["title"] = reason_title
+            reason_desc = xml_text(reason, "description")
+            if reason_desc:
+                reason_item["description"] = reason_desc
+
+            participants_list = []
+            for participant in reason.findall("participants_list/participants"):
+                entry = {}
+                group_id = (participant.attrib.get("group_id") or "").strip()
+                count = (participant.attrib.get("count") or "").strip()
+                if not count:
+                    count = normalize_whitespace(participant.text or "")
+                if group_id:
+                    entry["group_id"] = group_id
+                if count:
+                    entry["count"] = count
+                if entry:
+                    participants_list.append(entry)
+            if participants_list:
+                reason_item["participants"] = participants_list
+
+            if reason_item:
+                drop_reasons.append(reason_item)
+        if drop_reasons:
+            period_item["drop_withdraw_reasons"] = drop_reasons
+
+        if period_item:
+            periods.append(period_item)
+
+    if periods:
+        payload["periods"] = periods
+
+    return payload
 
 
 def parse_results_group_list(section: ET.Element) -> List[Dict[str, str]]:
@@ -882,10 +964,125 @@ def parse_results_baseline(root: ET.Element) -> Dict[str, object]:
     if baseline is None:
         return {}
     groups = parse_results_group_list(baseline)
+    if len(groups) > 1:
+        filtered = [group for group in groups if not is_total_group_title(group.get("title", ""))]
+        if filtered:
+            groups = filtered
     return {
         "population": xml_text(baseline, "population"),
         "groups": groups,
     }
+
+
+def parse_results_baseline_measures(root: ET.Element) -> List[Dict[str, object]]:
+    results = root.find("clinical_results")
+    if results is None:
+        return []
+    baseline = results.find("baseline")
+    if baseline is None:
+        return []
+
+    total_group_ids: set = set()
+    groups = parse_results_group_list(baseline)
+    if len(groups) > 1:
+        for group in groups:
+            if is_total_group_title(group.get("title", "")):
+                group_id = (group.get("group_id") or "").strip()
+                if group_id:
+                    total_group_ids.add(group_id)
+
+    measures: List[Dict[str, object]] = []
+    for measure in baseline.findall("measure_list/measure"):
+        entry: Dict[str, object] = {}
+        title = xml_text(measure, "title")
+        units = xml_text(measure, "units")
+        param = xml_text(measure, "param")
+        dispersion = xml_text(measure, "dispersion")
+        if title:
+            entry["measure_title"] = title
+        if units:
+            entry["units"] = units
+        if param:
+            entry["param"] = param
+        if dispersion:
+            entry["dispersion"] = dispersion
+
+        values = collect_measure_entries(measure)
+        if total_group_ids:
+            values = [item for item in values if item.get("group_id") not in total_group_ids]
+        if values:
+            entry["values"] = values
+        if entry:
+            measures.append(entry)
+    return measures
+
+
+def parse_reported_events(root: ET.Element) -> Dict[str, object]:
+    results = root.find("clinical_results")
+    if results is None:
+        return {}
+    reported = results.find("reported_events")
+    if reported is None:
+        return {}
+
+    def parse_event_section(section: Optional[ET.Element]) -> Dict[str, object]:
+        if section is None:
+            return {}
+        payload: Dict[str, object] = {}
+        default_assessment = xml_text(section, "default_assessment")
+        frequency_threshold = xml_text(section, "frequency_threshold")
+        if default_assessment:
+            payload["default_assessment"] = default_assessment
+        if frequency_threshold:
+            payload["frequency_threshold"] = frequency_threshold
+
+        categories: List[Dict[str, object]] = []
+        for category in section.findall("category_list/category"):
+            category_title = xml_text(category, "title")
+            events: List[Dict[str, object]] = []
+            for event in category.findall("event_list/event"):
+                sub_title = xml_text(event, "sub_title")
+                counts_list: List[Dict[str, str]] = []
+                for counts in event.findall("counts"):
+                    item: Dict[str, str] = {}
+                    group_id = (counts.attrib.get("group_id") or "").strip()
+                    if group_id:
+                        item["group_id"] = group_id
+                    for attr in ("subjects_affected", "subjects_at_risk", "events"):
+                        value = (counts.attrib.get(attr) or "").strip()
+                        if value:
+                            item[attr] = value
+                    if item:
+                        counts_list.append(item)
+                if sub_title or counts_list:
+                    event_item: Dict[str, object] = {}
+                    if sub_title:
+                        event_item["sub_title"] = sub_title
+                    if counts_list:
+                        event_item["counts"] = counts_list
+                    events.append(event_item)
+            if category_title or events:
+                category_item: Dict[str, object] = {}
+                if category_title:
+                    category_item["category"] = category_title
+                if events:
+                    category_item["events"] = events
+                categories.append(category_item)
+        if categories:
+            payload["categories"] = categories
+        return payload
+
+    payload: Dict[str, object] = {}
+    groups = parse_results_group_list(reported)
+    if groups:
+        payload["groups"] = groups
+    serious = parse_event_section(reported.find("serious_events"))
+    if serious:
+        payload["serious_events"] = serious
+    other = parse_event_section(reported.find("other_events"))
+    if other:
+        payload["other_events"] = other
+    return payload
 
 
 def collect_measure_entries(measure: ET.Element) -> List[Dict[str, str]]:
@@ -1286,6 +1483,7 @@ def parse_results_outcomes(root: ET.Element) -> List[Dict[str, object]]:
                     "description": xml_text(group, "description"),
                 }
             )
+        measures = parse_outcome_measures(outcome)
         analyses = []
         for analysis in outcome.findall("analysis_list/analysis"):
             analyses.append(
@@ -1307,6 +1505,7 @@ def parse_results_outcomes(root: ET.Element) -> List[Dict[str, object]]:
                 "time_frame": xml_text(outcome, "time_frame"),
                 "population": xml_text(outcome, "population"),
                 "groups": groups,
+                "measures": measures,
                 "analysis_list": analyses,
             }
         )
@@ -1385,29 +1584,15 @@ def parse_outcome_measures(outcome: ET.Element) -> List[Dict[str, object]]:
         if dispersion:
             entry["dispersion"] = dispersion
 
-        values: List[Dict[str, str]] = []
-        for measurement in measure.findall(".//measurement_list/measurement"):
-            group_id = (measurement.attrib.get("group_id") or "").strip()
-            value = (measurement.attrib.get("value") or "").strip()
-            if not value:
-                value = normalize_whitespace(measurement.text or "")
-            spread = (measurement.attrib.get("spread") or "").strip()
-            lower = (measurement.attrib.get("lower_limit") or "").strip()
-            upper = (measurement.attrib.get("upper_limit") or "").strip()
-
-            item: Dict[str, str] = {}
-            if group_id:
-                item["group_id"] = group_id
-            if value:
-                item["value"] = value
-            if spread:
-                item["spread"] = spread
-            if lower:
-                item["lower"] = lower
-            if upper:
-                item["upper"] = upper
-            if item:
-                values.append(item)
+        values = [
+            item
+            for item in collect_measure_entries(measure)
+            if item.get("group_id")
+            or item.get("value")
+            or item.get("spread")
+            or item.get("lower")
+            or item.get("upper")
+        ]
 
         if values:
             entry["values"] = values
@@ -1490,6 +1675,7 @@ def build_arm_candidates(arms: List[Dict[str, str]], nct_id: str) -> List[Dict[s
     for idx, arm in enumerate(arms, start=1):
         title_raw = normalize_whitespace(str(arm.get("label") or ""))
         desc_raw = normalize_whitespace(str(arm.get("description") or ""))
+        type_raw = normalize_whitespace(str(arm.get("type") or ""))
         title_norm = normalize_match_text(title_raw)
         desc_norm = normalize_match_text(desc_raw)
         aliases_norm = [title_norm] if title_norm else []
@@ -1500,6 +1686,7 @@ def build_arm_candidates(arms: List[Dict[str, str]], nct_id: str) -> List[Dict[s
                 "arm_code": arm_code,
                 "title_raw": title_raw,
                 "desc_raw": desc_raw,
+                "type_raw": type_raw,
                 "title_norm": title_norm,
                 "desc_norm": desc_norm,
                 "aliases_norm": aliases_norm,
@@ -1642,6 +1829,7 @@ def match_endpoint_group(
         "arm_group_desc_raw": "",
         "arm_group_title_norm": "",
         "arm_group_desc_norm": "",
+        "arm_group_type_raw": "",
         "match_type": "",
         "title_score": "",
         "desc_score": "",
@@ -1685,6 +1873,7 @@ def match_endpoint_group(
             result["arm_group_desc_raw"] = matched.get("desc_raw") or ""
             result["arm_group_title_norm"] = matched.get("title_norm") or ""
             result["arm_group_desc_norm"] = matched.get("desc_norm") or ""
+            result["arm_group_type_raw"] = matched.get("type_raw") or ""
             result["title_score"] = "100"
             if endpoint_group_desc_norm and matched.get("desc_norm"):
                 result["desc_score"] = str(fuzzy_score(endpoint_group_desc_norm, str(matched.get("desc_norm"))))
@@ -1708,6 +1897,7 @@ def match_endpoint_group(
         result["arm_group_desc_raw"] = best.get("desc_raw") or ""
         result["arm_group_title_norm"] = best.get("title_norm") or ""
         result["arm_group_desc_norm"] = best.get("desc_norm") or ""
+        result["arm_group_type_raw"] = best.get("type_raw") or ""
         result["title_score"] = "100"
         if best_desc_score is not None:
             result["desc_score"] = str(best_desc_score)
@@ -1766,6 +1956,7 @@ def match_endpoint_group(
     result["arm_group_desc_raw"] = matched.get("desc_raw") or ""
     result["arm_group_title_norm"] = matched.get("title_norm") or ""
     result["arm_group_desc_norm"] = matched.get("desc_norm") or ""
+    result["arm_group_type_raw"] = matched.get("type_raw") or ""
     result["title_score"] = str(top.get("title_score") or 0)
     result["desc_score"] = str(top.get("desc_score") or 0)
     result["debug_notes"] = "; ".join(debug_notes)
@@ -1970,7 +2161,7 @@ def extract_design_rows(
 
     interventions = parse_interventions(root)
     arms = parse_arm_groups(root)
-    drug_like = [iv for iv in interventions if iv["name"] and is_drug_like(iv["type"])]
+    drug_like = [iv for iv in interventions if iv[parse_results_outcomes"name"] and is_drug_like(iv["type"])]
     drug_like_names = [iv["name"] for iv in drug_like]
     if "Drug_Name" in row:
         row["Drug_Name"] = join_values(drug_like_names)
@@ -2160,11 +2351,13 @@ def extract_stat_reg_rows(
                 row["Randomization"] = "Yes"
     model_key = normalize_intervention_model(intervention_model)
     if "Random_Parallel" in row and is_interventional and model_key:
-        row["Random_Parallel"] = "Yes" if "parallel" in model_key else "No"
+        row["Random_Parallel"] = "Yes" if "parallel" in model_key else ""
     if "Random_Crossover" in row and is_interventional and model_key:
-        row["Random_Crossover"] = "Yes" if "crossover" in model_key else "No"
+        row["Random_Crossover"] = "Yes" if "crossover" in model_key else ""
     if "Random_Fact" in row and is_interventional and model_key:
-        row["Random_Fact"] = "Yes" if "factorial" in model_key else "No"
+        row["Random_Fact"] = "Yes" if "factorial" in model_key else ""
+    if "Random_Cluster" in row and is_interventional and model_key:
+        row["Random_Cluster"] = "Yes" if "cluster" in model_key else ""
 
     if "Stratification" in row and is_interventional:
         strat = xml_text(root, "study_design_info/stratification")
@@ -2367,7 +2560,9 @@ def extract_text_blocks(root: ET.Element, nct_id: str) -> Dict[str, object]:
         "secondary_outcomes": parse_outcomes(root, "secondary_outcome"),
         "participant_flow": parse_results_participant_flow(root),
         "baseline_results": parse_results_baseline(root),
+        "baseline_measures": parse_results_baseline_measures(root),
         "results_outcomes": parse_results_outcomes(root),
+        "reported_events": parse_reported_events(root),
         "keywords": xml_texts(root, "keyword"),
         "conditions": xml_texts(root, "condition"),
         "location_countries": xml_texts(root, "location_countries/country"),
@@ -2425,21 +2620,21 @@ def extract_endpoints_rows(
     nct_id = context["nct_id"]
     arm_candidates = build_arm_candidates_with_results_fallback(root, nct_id)
 
-    first_secondary_idx = None
-    for idx, outcome in enumerate(outcomes):
-        outcome_type = xml_text(outcome, "type").lower()
-        if "secondary" in outcome_type:
-            first_secondary_idx = idx
-            break
-
-    for idx, outcome in enumerate(outcomes):
+    secondary_seen = 0
+    for outcome in outcomes:
         outcome_type = xml_text(outcome, "type")
         endpoint_type = ""
         lower = outcome_type.lower()
         if "primary" in lower:
             endpoint_type = "Primary"
-        elif "secondary" in lower and first_secondary_idx is not None and idx == first_secondary_idx:
-            endpoint_type = "Key Secondary"
+        elif "secondary" in lower:
+            if secondary_seen >= 3:
+                continue
+            if "key" in lower:
+                endpoint_type = "Key Secondary"
+            else:
+                endpoint_type = "Secondary"
+            secondary_seen += 1
         if not endpoint_type:
             continue
         endpoint_name = xml_text(outcome, "title")
@@ -2645,6 +2840,10 @@ def extract_groups_rows(
 
     if not groups:
         groups = [{"group_id": "overall", "title": "Overall", "description": ""}]
+    elif len(groups) > 1:
+        filtered = [group for group in groups if not is_total_group_title(group.get("title", ""))]
+        if filtered:
+            groups = filtered
 
     enroll_by_gid = parse_participant_flow_started_counts(root)
     demographics = extract_group_demographics(root)
@@ -2662,10 +2861,14 @@ def extract_groups_rows(
             row["StudyID"] = nct_id
         if "Drug_Name" in row:
             row["Drug_Name"] = drug_name
-        if "Arm_ID" in row:
+        match_info = None
+        if "Arm_ID" in row or "Arm_Group_Type" in row:
             match_info = match_endpoint_group(group, arm_candidates)
             ensure_matched_arm_id(match_info, nct_id, group)
-            row["Arm_ID"] = match_info.get("matched_arm_id", "")
+            if "Arm_ID" in row:
+                row["Arm_ID"] = match_info.get("matched_arm_id", "")
+            if "Arm_Group_Type" in row:
+                row["Arm_Group_Type"] = str(match_info.get("arm_group_type_raw") or "")
         if "Date_End" in row:
             row["Date_End"] = completion_date or primary_completion_date
         if "Results_Posted_Or_Updated_Date" in row:
@@ -2874,32 +3077,11 @@ def parse_args() -> argparse.Namespace:
         default=0,
         help="Limit number of NCT IDs processed (applies after combining inputs).",
     )
-    parser.add_argument(
-        "--text-out",
-        type=str,
-        default="",
-        help=(
-            "Optional output path for text blocks (default: auto for --nct-id/--nct-csv; "
-            "set a path to enable; use 'none' to disable)."
-        ),
-    )
-    parser.add_argument(
-        "--text-format",
-        type=str,
-        default="auto",
-        choices=("auto", "jsonl", "json", "both"),
-        help=(
-            "Text block format: auto (single NCT -> json+jsonl, multiple -> jsonl), "
-            "jsonl (newline-delimited), json (pretty JSON array), both."
-        ),
-    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    project_root = Path(__file__).resolve().parents[2]
-    default_text = project_root / "data/ctg_extract/ctg_text_blocks.jsonl"
 
     if not args.xlsx.exists():
         raise FileNotFoundError(f"Missing xlsx: {args.xlsx}")
@@ -2917,69 +3099,6 @@ def main() -> None:
     if args.nct_csv:
         csv_ids = load_nct_ids_from_csv(args.nct_csv, args.nct_id_col, args.limit)
     nct_ids = merge_nct_ids(csv_ids, parse_nct_ids(args.nct_id), args.limit)
-    suffix = suffix_for_ncts(nct_ids) if nct_ids else ""
-
-    text_out_arg = (args.text_out or "").strip()
-    text_out_lower = text_out_arg.lower()
-    text_format = (args.text_format or "auto").lower()
-
-    if nct_ids:
-        if len(nct_ids) == 1:
-            nct_id = nct_ids[0]
-            per_nct_text = project_root / "data/ctg_extract/by_nctid" / nct_id / "ctg_text_blocks.jsonl"
-            if text_out_lower in {"", "auto"}:
-                args.text_out = str(per_nct_text)
-            elif text_out_lower in {"none", "null"}:
-                pass
-            elif Path(text_out_arg) == default_text:
-                args.text_out = str(per_nct_text)
-        else:
-            if text_out_lower in {"", "auto"}:
-                args.text_out = str(default_text.with_name(f"ctg_text_blocks_{suffix}.jsonl"))
-            elif text_out_lower not in {"none", "null"} and Path(text_out_arg) == default_text:
-                args.text_out = str(default_text.with_name(f"ctg_text_blocks_{suffix}.jsonl"))
-
-    text_out_arg = (args.text_out or "").strip()
-    if text_out_arg.lower() in {"", "none", "null"}:
-        text_out_path = None
-    else:
-        text_out_path = Path(text_out_arg)
-
-    def normalize_text_paths(base: Path) -> Tuple[Path, Path]:
-        if base.suffix == ".jsonl":
-            return base, base.with_suffix(".json")
-        if base.suffix == ".json":
-            return base.with_suffix(".jsonl"), base
-        return base.with_suffix(".jsonl"), base.with_suffix(".json")
-
-    write_jsonl = False
-    write_json = False
-    if text_format == "auto":
-        if nct_ids and len(nct_ids) == 1:
-            write_jsonl = True
-            write_json = True
-        elif nct_ids:
-            write_jsonl = True
-    elif text_format == "jsonl":
-        write_jsonl = True
-    elif text_format == "json":
-        write_json = True
-    elif text_format == "both":
-        write_jsonl = True
-        write_json = True
-
-    text_jsonl_file = None
-    text_json_file = None
-    text_json_first = True
-    if text_out_path and (write_jsonl or write_json):
-        jsonl_path, json_path = normalize_text_paths(text_out_path)
-        if write_jsonl:
-            jsonl_path.parent.mkdir(parents=True, exist_ok=True)
-            text_jsonl_file = jsonl_path.open("w")
-        if write_json:
-            json_path.parent.mkdir(parents=True, exist_ok=True)
-            text_json_file = json_path.open("w")
-            text_json_file.write("[\n")
 
     region_map = region_sets() if "Design" in tables else {}
     match_report: List[Dict[str, object]] = [] if "Endpoints" in tables else []
@@ -3030,28 +3149,6 @@ def main() -> None:
         if match_report_local:
             write_group_arm_mapping(match_report_local, args.output_root, nct_id)
             match_report.extend(match_report_local)
-
-        if text_jsonl_file is not None or text_json_file is not None:
-            text_blocks = extract_text_blocks(root, nct_id)
-            if text_jsonl_file is not None:
-                text_jsonl_file.write(json.dumps(text_blocks, ensure_ascii=False) + "\n")
-            if text_json_file is not None:
-                if not text_json_first:
-                    text_json_file.write(",\n")
-                entry = json.dumps(text_blocks, ensure_ascii=False, indent=2)
-                indented = "\n".join(
-                    f"  {line}" if line else line for line in entry.splitlines()
-                )
-                text_json_file.write(indented)
-                text_json_first = False
-
-    if text_jsonl_file is not None:
-        text_jsonl_file.close()
-    if text_json_file is not None:
-        if not text_json_first:
-            text_json_file.write("\n")
-        text_json_file.write("]\n")
-        text_json_file.close()
 
     if match_report:
         write_matching_report(match_report, args.output_root)

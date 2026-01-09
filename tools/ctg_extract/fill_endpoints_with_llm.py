@@ -4,7 +4,6 @@ Fill Endpoints results table using the shared CTG LLM interface.
 """
 
 import sys
-from typing import List
 
 from fill_ctg_table_with_llm import PromptConfig, main as fill_main
 
@@ -39,6 +38,15 @@ LLM_FIELDS = [
     "PRO",
     "QoL",
 ]
+# study_info, eligibility, design_info, arm_groups, interventions, primary_outcomes, secondary_outcomes
+# participant_flow, baseline_results, baseline_measures, results_outcomes, reported_events
+# keywords, conditions, location_countries
+# endpoint_target, endpoint_matches
+
+TEXT_MODULES = [
+    "endpoint_target",
+    "endpoint_matches",
+]
 
 ENDPOINT_NOTES = {
     "EP_Value": "Return value only (numbers or %). Do not include explanatory text.",
@@ -53,19 +61,11 @@ ENDPOINT_NOTES = {
 }
 
 
-def endpoint_extra_rules(missing_fields: List[str]) -> List[str]:
-    _ = missing_fields
-    return [
-        "- Use ONLY the first outcome listed under 'Matched Outcomes' (highest match score). Ignore any other outcomes.",
-        "- For EP_Value/EP_Unit/EP_Point/EP_95CI/ARR/NNT/Med_OS/OS_YrX/Med_PFS/ORR/pCR/Med_DOR/RMST/PRO/QoL, prefer the Analyses section inside the selected outcome. If Analyses is absent, return empty unless the value is explicitly stated elsewhere in the selected outcome block.",
-    ]
-
-
 PROMPT_CONFIG = PromptConfig(
     instructions=INSTRUCTIONS,
     notes=ENDPOINT_NOTES,
-    extra_rules_fn=endpoint_extra_rules,
     llm_fields=LLM_FIELDS,
+    text_modules=TEXT_MODULES,
 )
 
 

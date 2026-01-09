@@ -4,7 +4,6 @@ Fill Design table using the shared CTG LLM interface.
 """
 
 import sys
-from typing import List
 
 from fill_ctg_table_with_llm import PromptConfig, main as fill_main
 
@@ -26,50 +25,18 @@ LLM_FIELDS = [
     "Central_Lab",
     "Run_in",
 ]
+# study_info, eligibility, design_info, arm_groups, interventions, primary_outcomes, secondary_outcomes
+# participant_flow, baseline_results, baseline_measures, results_outcomes, reported_events
+# keywords, conditions, location_countries
+# endpoint_target, endpoint_matches
 
-MODE_ADMIN_CHOICES = [
-    "oral",
-    "iv",
-    "im",
-    "sc",
-    "inhalation",
-    "topical",
-    "transdermal",
-    "intrathecal",
-    "intranasal",
-    "intravitreal",
-    "rectal",
-    "vaginal",
-    "other",
+TEXT_MODULES = [
+    "design_info",
+    "study_info",
+    "eligibility",
+    "arm_groups",
+    "interventions",
 ]
-TIME_UNIT_TOKENS = ("duration", "time", "period")
-
-
-def has_time_unit_field(fields: List[str]) -> bool:
-    for field in fields:
-        lower = field.lower()
-        if any(token in lower for token in TIME_UNIT_TOKENS):
-            return True
-    return False
-
-
-def design_extra_rules(missing_fields: List[str]) -> List[str]:
-    rules: List[str] = []
-    fields = {field.lower(): field for field in missing_fields}
-
-    if "route_admin" in fields:
-        choices = ", ".join(MODE_ADMIN_CHOICES)
-        rules.append(
-            f"- Route_Admin: choose one or more from [{choices}] and normalize to these tokens; use '; ' to separate multiple."
-        )
-
-    # only apply unit rule to planned duration fields (avoid conflicting with Treat_Duration like "6 cycles")
-    if "enroll_duration_plan" in fields or "fu_duration_plan" in fields:
-        rules.append(
-            "- Enroll_Duration_Plan / FU_Duration_Plan: return the literal planned duration phrase WITH unit (days/weeks/months/years). "
-            "Do NOT compute from Start/Completion dates. If unit not explicit, return empty."
-        )
-    return rules
 
 DESIGN_NOTES = {
     "GCP_Compliance": (
@@ -132,8 +99,8 @@ DESIGN_NOTES = {
 PROMPT_CONFIG = PromptConfig(
     instructions=INSTRUCTIONS,
     notes=DESIGN_NOTES,
-    extra_rules_fn=design_extra_rules,
     llm_fields=LLM_FIELDS,
+    text_modules=TEXT_MODULES,
 )
 
 

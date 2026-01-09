@@ -67,6 +67,7 @@ class PromptConfig:
     notes: Optional[Dict[str, str]] = None
     extra_rules_fn: Optional[ExtraRulesFn] = None
     llm_fields: Optional[List[str]] = None
+    text_modules: Optional[List[str]] = None
 
 TABLE_SKIP_FIELDS = {
     "Design": {"StudyID", "NCT_No", "Prot_No", "EUCT_No", "Other_No", "Drug_Name"},
@@ -557,101 +558,174 @@ def format_outcome_definitions(outcomes: object) -> str:
     return "\n".join(lines)
 
 
+STUDY_INFO_FIELDS = [
+    ("Brief Title", "brief_title"),
+    ("Official Title", "official_title"),
+    ("Brief Summary", "brief_summary"),
+    ("Detailed Description", "detailed_description"),
+]
+
+TEXT_BLOCK_MODULES = {
+    "study_info": "Brief/official title, brief summary, detailed description",
+    "eligibility": "Eligibility criteria",
+    "design_info": "Structured design metadata (phase, allocation, masking, etc.)",
+    "arm_groups": "Arm groups",
+    "interventions": "Interventions",
+    "primary_outcomes": "Primary outcomes",
+    "secondary_outcomes": "Secondary outcomes",
+    "participant_flow": "Participant flow (milestones/drop-withdraw reasons)",
+    "baseline_results": "Baseline results (population/groups)",
+    "baseline_measures": "Baseline measures (categories/values)",
+    "results_outcomes": "Results outcomes (analyses/measures)",
+    "reported_events": "Serious/other reported events",
+    "keywords": "Keywords",
+    "conditions": "Conditions",
+    "location_countries": "Location countries",
+    "endpoint_target": "Endpoint target fields from the row",
+    "endpoint_matches": "Matched outcomes from results",
+}
+
+DEFAULT_TEXT_MODULES_GENERIC = [
+    "study_info",
+    "eligibility",
+    "participant_flow",
+    "baseline_results",
+    "baseline_measures",
+    "results_outcomes",
+    "reported_events",
+    "arm_groups",
+    "interventions",
+    "primary_outcomes",
+    "secondary_outcomes",
+    "keywords",
+    "conditions",
+    "location_countries",
+]
+
+DEFAULT_TEXT_MODULES = {
+    "Design": [
+        "design_info",
+        "study_info",
+        "eligibility",
+        "arm_groups",
+        "interventions",
+    ],
+    "Stat_Reg": [
+        "design_info",
+        "study_info",
+        "arm_groups",
+        "interventions",
+        "primary_outcomes",
+        "secondary_outcomes",
+    ],
+    "Endpoints": [
+        "endpoint_target",
+        "endpoint_matches",
+    ],
+    "TargetPop": [
+        "study_info",
+        "eligibility",
+    ],
+}
+
+
+def resolve_text_modules(table: str, text_modules: Optional[List[str]]) -> List[str]:
+    modules = text_modules or DEFAULT_TEXT_MODULES.get(table, DEFAULT_TEXT_MODULES_GENERIC)
+    return [module for module in modules if module in TEXT_BLOCK_MODULES]
+
+
 def format_text_blocks(
     record: Dict[str, object],
     max_chars: int,
     table: str,
     row: Optional[Dict[str, str]] = None,
+    text_modules: Optional[List[str]] = None,
 ) -> str:
     sections: List[str] = []
-    if table in {"Design", "Stat_Reg"}:
-        design_info = record.get("design_info")
-        if design_info:
-            sections.append(
-                "Structured Design:\n" + json.dumps(design_info, ensure_ascii=False)
-            )
-    if table == "Endpoints":
-        base_fields: List[Tuple[str, str]] = []
-    elif table == "Stat_Reg":
-        base_fields = [
-            ("Brief Title", "brief_title"),
-            ("Official Title", "official_title"),
-            ("Brief Summary", "brief_summary"),
-            ("Detailed Description", "detailed_description"),
-        ]
-    else:
-        base_fields = [
-            ("Brief Title", "brief_title"),
-            ("Official Title", "official_title"),
-            ("Brief Summary", "brief_summary"),
-            ("Detailed Description", "detailed_description"),
-            ("Eligibility Criteria", "eligibility_criteria"),
-        ]
-    for label, key in base_fields:
-        value = normalize_whitespace(str(record.get(key, "") or ""))
-        if value:
-            sections.append(f"{label}: {value}")
-
-    if table == "Design":
-        arm_groups = format_arm_groups(record.get("arm_groups"))
-        if arm_groups:
-            sections.append("Arm Groups:\n" + arm_groups)
-        interventions = format_interventions(record.get("interventions"))
-        if interventions:
-            sections.append("Interventions:\n" + interventions)
-    elif table == "Stat_Reg":
-        arm_groups = format_arm_groups(record.get("arm_groups"))
-        if arm_groups:
-            sections.append("Arm Groups:\n" + arm_groups)
-        interventions = format_interventions(record.get("interventions"))
-        if interventions:
-            sections.append("Interventions:\n" + interventions)
-        primary_outcomes = format_outcome_definitions(record.get("primary_outcomes"))
-        if primary_outcomes:
-            sections.append("Primary Outcomes:\n" + primary_outcomes)
-        secondary_outcomes = format_outcome_definitions(record.get("secondary_outcomes"))
-        if secondary_outcomes:
-            sections.append("Secondary Outcomes:\n" + secondary_outcomes)
-    elif table == "Endpoints":
-        target_name = normalize_whitespace(str((row or {}).get("Endpoint_Name") or ""))
-        target_type = normalize_whitespace(str((row or {}).get("Endpoint_Type") or ""))
-        target_arm = normalize_whitespace(str((row or {}).get("Arm_ID") or ""))
-        if target_name:
-            sections.append(f"Target Endpoint_Name: {target_name}")
-        if target_type:
-            sections.append(f"Target Endpoint_Type: {target_type}")
-        if target_arm:
-            sections.append(f"Target Arm_ID: {target_arm}")
-
-        selected = select_outcomes(record.get("results_outcomes"), target_name, max_candidates=1)
-        if selected:
-            sections.append("Matched Outcomes:")
-            for outcome, score in selected:
-                sections.append(format_outcome(outcome, score))
-        else:
-            sections.append("No matching outcome found for Target Endpoint_Name; return empty for all fields.")
-    else:
-        for label, key in [
-            ("Participant Flow", "participant_flow"),
-            ("Baseline Results", "baseline_results"),
-            ("Results Outcomes", "results_outcomes"),
-            ("Arm Groups", "arm_groups"),
-            ("Interventions", "interventions"),
-            ("Primary Outcomes", "primary_outcomes"),
-            ("Secondary Outcomes", "secondary_outcomes"),
-        ]:
-            value = record.get(key)
+    modules = resolve_text_modules(table, text_modules)
+    for module in modules:
+        if module == "design_info":
+            design_info = record.get("design_info")
+            if design_info:
+                sections.append("Structured Design:\n" + json.dumps(design_info, ensure_ascii=False))
+        elif module == "study_info":
+            for label, key in STUDY_INFO_FIELDS:
+                value = normalize_whitespace(str(record.get(key, "") or ""))
+                if value:
+                    sections.append(f"{label}: {value}")
+        elif module == "eligibility":
+            value = normalize_whitespace(str(record.get("eligibility_criteria", "") or ""))
             if value:
-                sections.append(f"{label}: {json.dumps(value, ensure_ascii=False)}")
-
-        for label, key in [
-            ("Keywords", "keywords"),
-            ("Conditions", "conditions"),
-            ("Location Countries", "location_countries"),
-        ]:
-            value = record.get(key)
+                sections.append(f"Eligibility Criteria: {value}")
+        elif module == "arm_groups":
+            arm_groups = format_arm_groups(record.get("arm_groups"))
+            if arm_groups:
+                sections.append("Arm Groups:\n" + arm_groups)
+        elif module == "interventions":
+            interventions = format_interventions(record.get("interventions"))
+            if interventions:
+                sections.append("Interventions:\n" + interventions)
+        elif module == "primary_outcomes":
+            primary_outcomes = format_outcome_definitions(record.get("primary_outcomes"))
+            if primary_outcomes:
+                sections.append("Primary Outcomes:\n" + primary_outcomes)
+        elif module == "secondary_outcomes":
+            secondary_outcomes = format_outcome_definitions(record.get("secondary_outcomes"))
+            if secondary_outcomes:
+                sections.append("Secondary Outcomes:\n" + secondary_outcomes)
+        elif module == "participant_flow":
+            value = record.get("participant_flow")
             if value:
-                sections.append(f"{label}: {json.dumps(value, ensure_ascii=False)}")
+                sections.append(f"Participant Flow: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "baseline_results":
+            value = record.get("baseline_results")
+            if value:
+                sections.append(f"Baseline Results: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "baseline_measures":
+            value = record.get("baseline_measures")
+            if value:
+                sections.append(f"Baseline Measures: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "results_outcomes":
+            value = record.get("results_outcomes")
+            if value:
+                sections.append(f"Results Outcomes: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "reported_events":
+            value = record.get("reported_events")
+            if value:
+                sections.append(f"Reported Events: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "keywords":
+            value = record.get("keywords")
+            if value:
+                sections.append(f"Keywords: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "conditions":
+            value = record.get("conditions")
+            if value:
+                sections.append(f"Conditions: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "location_countries":
+            value = record.get("location_countries")
+            if value:
+                sections.append(f"Location Countries: {json.dumps(value, ensure_ascii=False)}")
+        elif module == "endpoint_target":
+            target_name = normalize_whitespace(str((row or {}).get("Endpoint_Name") or ""))
+            target_type = normalize_whitespace(str((row or {}).get("Endpoint_Type") or ""))
+            target_arm = normalize_whitespace(str((row or {}).get("Arm_ID") or ""))
+            if target_name:
+                sections.append(f"Target Endpoint_Name: {target_name}")
+            if target_type:
+                sections.append(f"Target Endpoint_Type: {target_type}")
+            if target_arm:
+                sections.append(f"Target Arm_ID: {target_arm}")
+        elif module == "endpoint_matches":
+            target_name = normalize_whitespace(str((row or {}).get("Endpoint_Name") or ""))
+            selected = select_outcomes(record.get("results_outcomes"), target_name, max_candidates=1)
+            if selected:
+                sections.append("Matched Outcomes:")
+                for outcome, score in selected:
+                    sections.append(format_outcome(outcome, score))
+            else:
+                sections.append(
+                    "No matching outcome found for Target Endpoint_Name; return empty for all fields."
+                )
 
     text = "\n".join(sections)
     if max_chars and len(text) > max_chars:
@@ -1055,7 +1129,8 @@ def process_table(
 
             ordered_fields = order_fields_for_table(table, missing_fields)
             batches = split_fields(ordered_fields, max_fields_per_call)
-            text_blob = format_text_blocks(record, max_chars, table, row)
+            text_modules = prompt_config.text_modules if prompt_config else None
+            text_blob = format_text_blocks(record, max_chars, table, row, text_modules)
 
             for batch_index, batch_fields in enumerate(batches):
                 prompt = build_prompt(
@@ -1264,7 +1339,7 @@ def main(argv: Optional[List[str]] = None, prompt_config: Optional[PromptConfig]
         if len(nct_ids) == 1:
             nct_id = nct_ids[0]
             nct_paths = per_nct_paths(table, nct_id)
-            if args.input_csv == paths["input"] and nct_paths["input"].exists():
+            if args.input_csv == paths["input"]:
                 args.input_csv = nct_paths["input"]
             if args.output_csv == paths["output"]:
                 args.output_csv = nct_paths["output"]
