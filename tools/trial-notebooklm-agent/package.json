@@ -1,0 +1,13 @@
+{
+  "name": "trial-notebooklm-agent",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run -w @trial/trial-extract-mcp build",
+    "dev": "npm run -w @trial/trial-extract-mcp dev",
+    "start": "npm run -w @trial/trial-extract-mcp start"
+  }
+}

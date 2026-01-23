@@ -1,0 +1,21 @@
+{
+  "name": "design",
+  "description": "Study design and methodology fields.",
+  "fields": [
+    {
+      "key": "study_phase",
+      "question": "What is the study phase?",
+      "required": true
+    },
+    {
+      "key": "randomization",
+      "question": "Describe randomization and allocation.",
+      "required": false
+    },
+    {
+      "key": "blinding",
+      "question": "Describe masking or blinding.",
+      "required": false
+    }
+  ]
+}

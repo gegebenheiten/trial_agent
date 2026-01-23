@@ -1,0 +1,16 @@
+{
+  "name": "endpoints",
+  "description": "Endpoint extraction fields.",
+  "fields": [
+    {
+      "key": "primary_endpoint",
+      "question": "List primary endpoints and timing.",
+      "required": true
+    },
+    {
+      "key": "secondary_endpoints",
+      "question": "List secondary endpoints and timing.",
+      "required": false
+    }
+  ]
+}

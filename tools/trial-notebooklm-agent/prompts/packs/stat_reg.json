@@ -1,0 +1,21 @@
+{
+  "name": "stat_reg",
+  "description": "Statistical and regulatory extraction fields.",
+  "fields": [
+    {
+      "key": "primary_endpoint",
+      "question": "What is the primary endpoint?",
+      "required": true
+    },
+    {
+      "key": "analysis_population",
+      "question": "What analysis population is used for the primary analysis?",
+      "required": false
+    },
+    {
+      "key": "multiplicity_adjustment",
+      "question": "Describe any multiplicity adjustment strategy.",
+      "required": false
+    }
+  ]
+}
