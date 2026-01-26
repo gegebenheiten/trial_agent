@@ -1,0 +1,17 @@
+NotebookLM extraction instructions.
+
+Rules:
+- Return ONLY a valid JSON object (no markdown, no commentary).
+- If the text is ambiguous or conflicts with the field meaning, return empty.
+- If a field is not explicitly stated, return empty.
+- Keys MUST match exactly and MUST include ALL keys listed in the template.
+- Output must match this schema for every key: {"value":"...","evidence":"..."}.
+- Each field MUST include source: {"name":"...","type":"..."}.
+- source.name must match the exact NotebookLM source title.
+- source.type must be one of: XML, PDF, Feature notes, Instructions.
+- Do NOT add extra keys.
+- Evidence can be multiple substrings separated by ' | '.
+- Keep evidence short (<=240 chars per segment). No ellipses.
+- Evidence MUST be exact quotes copied from NotebookLM sources.
+- Do NOT cite feature notes or instruction.txt as evidence for values.
+- Do NOT use any context outside of NotebookLM sources.

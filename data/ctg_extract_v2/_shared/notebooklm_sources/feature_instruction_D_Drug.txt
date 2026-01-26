@@ -1,0 +1,79 @@
+Table: D_Drug
+
+Feature notes (definitions):
+Target_Engage
+- Definition: Molecular targets (e.g., proteins/receptors/enzymes) or biological pathways that the drug is explicitly stated to bind, inhibit, activate, or otherwise engage.
+- Value_Type: Text (entity list; semicolon-separated)
+- Output: target/pathway list (e.g., "PD-1; PD-L1; JAK-STAT pathway") / "No" / "Unknown"
+- Decision rules:
+  - Extract ONLY when the source explicitly states target/pathway engagement (e.g., “inhibits EGFR”, “binds PD-1”, “activates PPARγ”, “blocks VEGF signaling”).
+  - Include the target/pathway names exactly as stated; do NOT infer targets from drug class or indication.
+  - If multiple targets/pathways are stated, list each once (de-duplicate) and separate with semicolons.
+  - If the source explicitly states there is no known target, no specific target engagement, or the mechanism/target is unknown/undetermined → Output "No".
+  - If the source provides no target/pathway information (not mentioned) → Output "Unknown".
+
+Biochem_Change
+- Definition: Mechanism of action (MoA) or biochemical change explicitly attributed to the drug (e.g., enzymatic inhibition, receptor antagonism/agonism, signaling phosphorylation changes, biomolecule production changes).
+- Value_Type: Text
+- Output: free-text description / "No" / "Unknown"
+- Decision rules:
+  - Extract ONLY when the source explicitly attributes a biochemical mechanism/change to the drug (e.g., “inhibits kinase activity”, “reduces phosphorylation of X”, “induces apoptosis via caspase activation”).
+  - Keep the description close to the original wording; do NOT add mechanistic steps not stated.
+  - If multiple biochemical changes are stated, concatenate succinctly using “; ” (semicolon + space), preserving explicit wording.
+  - If the source explicitly states the MoA/biochemical change is unknown, not established, or not characterized → Output "No".
+  - If biochemical mechanism/change is not mentioned → Output "Unknown".
+
+Physio_Change
+- Definition: Physiological effect explicitly attributed to the drug (e.g., changes in blood pressure, heart rate, bronchodilation, immune activation, tumor shrinkage as a physiological response) as described in the source.
+- Value_Type: Text
+- Output: free-text description / "No" / "Unknown"
+- Decision rules:
+  - Extract ONLY when the physiological effect is explicitly linked to the drug (not merely the disease course or background therapy).
+  - Prefer concrete physiological descriptions and metrics when stated (e.g., “reduces systolic blood pressure”, “increases FEV1”, “induces vasodilation”).
+  - Do NOT infer physiological effects from pharmacology class; do NOT rephrase into claims not supported by the text.
+  - If the source explicitly states there is no physiological effect, no observed effect, or effect is unknown/undetermined → Output "No".
+  - If physiological effect is not mentioned → Output "Unknown".
+
+Imaging_Biomarker
+- Definition: Imaging biomarker(s) explicitly used to assess the drug’s effect (e.g., PET tracer uptake metrics, MRI lesion count/volume, CT tumor size measurement), including modality and metric when stated.
+- Value_Type: Text (entity/metric list; semicolon-separated)
+- Output: imaging biomarker list (e.g., "FDG-PET SUVmax; MRI lesion volume") / "No" / "Unknown"
+- Decision rules:
+  - Extract ONLY when an imaging modality AND an imaging-derived biomarker/metric is explicitly stated for assessing drug effect.
+  - Include modality + biomarker/metric together when possible (e.g., “CT tumor size (RECIST)”, “DCE-MRI Ktrans”, “PET SUV”).
+  - If multiple imaging biomarkers are stated, de-duplicate and separate with semicolons.
+  - If the source explicitly states no imaging biomarkers were used, or imaging assessment is not performed/absent → Output "No".
+  - If imaging biomarker information is not mentioned → Output "Unknown".
+
+Molecular_EP
+- Definition: Molecular endpoint(s) or molecular biomarker(s) explicitly used to assess the drug (e.g., gene/protein expression, phosphorylation markers, circulating biomarkers, mutation burden), excluding imaging metrics.
+- Value_Type: Text (entity list; semicolon-separated)
+- Output: molecular endpoint/biomarker list (e.g., "PD-L1 expression; IL-6 level; ctDNA mutation allele frequency") / "No" / "Unknown"
+- Decision rules:
+  - Extract ONLY when the source explicitly states a molecular biomarker/endpoint used to evaluate drug effect.
+  - Prefer specifying analyte + context/matrix if stated (e.g., “serum IL-6”, “tumor PD-L1 IHC”, “plasma ctDNA”).
+  - Exclude imaging-derived metrics (those belong in Imaging_Biomarker).
+  - If multiple molecular endpoints are stated, de-duplicate and separate with semicolons.
+  - If the source explicitly states no molecular biomarkers/endpoints were used, or none were assessed → Output "No".
+  - If molecular endpoint/biomarker information is not mentioned → Output "Unknown".
+
+Is_Biosimilar
+- Definition: Whether the drug is explicitly described as a biosimilar, or the study/drug is explicitly described as evaluating biosimilarity.
+- Value_Type: Categorical (Yes / No / Unknown)
+- Output: "Yes" / "No" / "Unknown"
+- Decision rules:
+  - Output "Yes" ONLY if the source explicitly uses terms like “biosimilar”, “biosimilarity”, “similar biologic”, or explicitly states the product is a biosimilar of a named reference biologic.
+  - Output "No" ONLY if the source explicitly states it is NOT a biosimilar (e.g., “not a biosimilar”, “novel biologic”, “originator/reference product”) or otherwise explicitly negates biosimilar status.
+  - Do NOT infer from vague language like “similar to”, “comparable”, or shared INN alone.
+  - If biosimilar status is not mentioned → Output "Unknown".
+
+Excipients
+- Definition: Inactive ingredients/excipients in the drug formulation explicitly stated in the source; excludes active drug substances and excludes co-administered active drugs.
+- Value_Type: Text (entity list; semicolon-separated)
+- Output: excipient list (e.g., "polysorbate 80; mannitol; sodium chloride") / "No" / "Unknown"
+- Decision rules:
+  - Extract ONLY ingredients explicitly described as excipients/inactive ingredients/formulation components (e.g., “contains mannitol and polysorbate 80 as excipients”).
+  - Exclude active drug names, salts/strength statements for the active ingredient, and any co-administered active agents (combination therapy actives are NOT excipients).
+  - If multiple excipients are stated, de-duplicate and separate with semicolons.
+  - If the source explicitly states excipient-free formulation or no excipients/inactive ingredients → Output "No".
+  - If excipient information is not mentioned → Output "Unknown".

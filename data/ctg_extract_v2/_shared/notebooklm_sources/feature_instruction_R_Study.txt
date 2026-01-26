@@ -1,0 +1,272 @@
+Table: R_Study
+
+1) Strategy
+- Definition: Estimand strategy used in the analysis of this endpoint, e.g.,
+  (1) treatment policy strategy, (2) hypothetical strategy,
+  (3) composite variable strategy, (4) principal strata strategy,
+  (5) while-on-treatment strategy.
+- Value type: Categorical (single-choice).
+- Allowed values: {treatment policy strategy, hypothetical strategy, composite variable strategy, principal strata strategy, while-on-treatment strategy, Unknown}
+- Decision rules:
+  - In the selected (first, highest-score) outcome block, extract ONLY if one or more of the above strategy terms are explicitly stated.
+  - If none are explicitly stated, or wording is ambiguous, output "Unknown".
+
+2) Analysis_Set
+- Definition: Analysis population/set used for this endpoint (e.g., ITT, mITT, per-protocol, safety set).
+- Value type: Text label (open vocabulary) OR Unknown.
+- Allowed values: {<explicit label as stated>, Unknown}
+- Decision rules:
+  - Copy the explicit population label ONLY if stated (e.g., "ITT", "mITT", "per-protocol", "safety population").
+  - If not explicitly stated, output "Unknown".
+
+3) Missing_Imput
+- Definition: Methods/assumptions for missing data handling/imputation (e.g., MAR/MCAR/MNAR, multiple imputation, LOCF, non-responder imputation).
+- Value type: Categorical/Text (method/assumption name) with Unknown.
+- Allowed values: {<explicit method/assumption>, Unknown}
+  - Examples of valid values: "MAR", "MCAR", "MNAR", "multiple imputation", "MI", "LOCF", "non-responder imputation", "worst-case imputation"
+- Decision rules:
+  - Extract only if the selected outcome block explicitly mentions missingness assumptions (MAR/MCAR/MNAR) or a specific imputation/handling method.
+  - If not explicitly stated, output "Unknown".
+
+4) Covariate_Adjust
+- Definition: Whether covariates are adjusted using modeling approaches (e.g., ANCOVA, Cox regression; adjusted for baseline).
+- Value type: {Yes/No/Unknown} with optional detail.
+- Allowed values: {Yes, Yes: <model/detail>, No, Unknown}
+- Decision rules:
+  - Output "Yes: <detail>" if the text explicitly states covariate adjustment or an adjusted model/estimate (e.g., "adjusted for baseline", "ANCOVA", "multivariable Cox", "covariate-adjusted").
+  - Output "No" ONLY if the text explicitly says no adjustment / unadjusted analysis.
+  - Otherwise output "Unknown".
+- Examples:
+  - "Yes: ANCOVA (baseline-adjusted)"
+  - "Yes: Cox (adjusted)"
+  - "No"
+  - "Unknown"
+
+5) MCP
+- Definition: Whether multiple comparison/multiple testing procedures are used to adjust multiplicity.
+- Value type: {Yes/No/Unknown} with optional detail (method name).
+- Allowed values: {Yes, Yes: <method>, No, Unknown}
+- Decision rules:
+  - Output "Yes: <method>" if the selected outcome block explicitly names a multiplicity method (e.g., Bonferroni/Holm/Hochberg/FDR/Dunnett/gatekeeping/hierarchical testing) or states "multiplicity adjusted".
+  - Output "No" ONLY if the text explicitly states no multiplicity adjustment / unadjusted for multiplicity.
+  - Otherwise output "Unknown".
+- Examples:
+  - "Yes: Bonferroni"
+  - "Yes: gatekeeping"
+  - "No"
+  - "Unknown"
+
+6) Subgroup_Ana
+- Definition: Whether subgroup analysis is performed.
+- Value type: {Yes/No/Unknown} with optional detail.
+- Allowed values: {Yes, Yes: <detail>, No, Unknown}
+- Decision rules:
+  - Output "Yes: <detail>" if the outcome block explicitly reports subgroup analyses or mentions "subgroup", "pre-specified subgroup", "interaction test", or subgroup-specific estimates.
+  - Output "No" ONLY if the text explicitly states no subgroup analyses were performed.
+  - Otherwise output "Unknown".
+- Example:
+  - "Yes: pre-specified subgroup; interaction test"
+
+7) Post_Hoc_Ana
+- Definition: Any analysis explicitly described as post hoc.
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" ONLY when text uses the phrase "post hoc" (case-insensitive).
+  - Output "No" ONLY when text explicitly states analyses were not post hoc (rare) or explicitly pre-specified only.
+  - Do NOT treat "exploratory" as post hoc unless it literally says post hoc.
+  - Otherwise output "Unknown".
+
+8) Consistency_Sens_Ana_PE
+- Definition: Sensitivity analyses for the primary endpoint are explicitly reported as consistent/robust vs primary analysis.
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" ONLY if text explicitly states consistency/robustness (e.g., "results were consistent across sensitivity analyses", "robust to sensitivity analyses").
+  - Output "No" ONLY if text explicitly states sensitivity analyses were not consistent / not robust / materially different.
+  - Otherwise output "Unknown".
+
+9) Consistency_Sens_Ana_SE
+- Definition: Sensitivity analyses for the key secondary endpoint are explicitly reported as consistent/robust vs primary analysis.
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Same as Consistency_Sens_Ana_PE, but tied to the key secondary endpoint.
+
+10) No_Amendment
+- Definition: Number of protocol amendments before the study is completed.
+- Value type: Integer OR Unknown.
+- Allowed values: {0, 1, 2, 3, ... , Unknown}
+- Decision rules:
+  - Return an integer count ONLY when explicitly stated.
+  - Otherwise output "Unknown".
+
+11) No_Substan_Amend
+- Definition: Number of substantial amendments before the study is completed.
+- Value type: Integer OR Unknown.
+- Allowed values: {0, 1, 2, 3, ... , Unknown}
+- Decision rules:
+  - Return an integer count ONLY when explicitly stated.
+  - Otherwise output "Unknown".
+
+12) No_Sub_Screen
+- Definition: Number of participants screened.
+- Value type: Integer OR Unknown.
+- Allowed values: {<integer>, Unknown}
+- Decision rules:
+  - Return an integer count ONLY when explicitly stated.
+  - Otherwise output "Unknown".
+
+13) No_Sub_Enroll
+- Definition: Number of participants enrolled (or randomized/started, as explicitly stated) in the study.
+- Value type: Integer OR Unknown.
+- Allowed values: {<integer>, Unknown}
+- Decision rules:
+  - Return an integer count ONLY when explicitly stated.
+  - Otherwise output "Unknown".
+
+14) Screen_Failure
+- Definition: Screening failure rate of the study.
+- Value type: Percentage string OR Unknown.
+- Allowed values: {"<number>%", Unknown}
+- Decision rules:
+  - If explicitly reported, copy it (must include '%').
+  - Otherwise, compute ONLY if BOTH Screened and Enrolled/Randomized/Started counts are explicitly given:
+      (Screened - Enrolled_or_Randomized) / Screened * 100
+    Then round reasonably (prefer whole-number percent unless the text implies decimals).
+  - If required counts are missing, output "Unknown".
+
+15) Reasons_Screen_Fail
+- Definition: Reasons for screen failure (raw wording preferred).
+- Value type: Text list OR Unknown.
+- Allowed values: {<raw text>, Unknown}
+- Decision rules:
+  - Return the reasons exactly as stated (do not re-classify).
+  - If multiple reasons are listed, join with "; ".
+  - If no reasons are explicitly stated, output "Unknown".
+
+16) Enroll_Rate
+- Definition: Average number of participants enrolled per month.
+- Value type: Numeric (integer or decimal) OR Unknown.
+- Allowed values: {<number>, Unknown}
+- Decision rules:
+  - Only fill when explicitly stated (e.g., "10 participants per month"); output numeric value only.
+  - Otherwise output "Unknown".
+
+17) Time_FPI
+- Definition: Time in days from trial start to first patient in (FPI).
+- Value type: Integer (days) OR Unknown.
+- Allowed values: {<integer>, Unknown}
+- Decision rules:
+  - Return an integer only if explicitly stated (e.g., "first patient in after 10 days"),
+    OR when BOTH dates are explicitly given and the difference in days can be computed.
+  - If dates or linkage are unclear, output "Unknown".
+
+18) Prop_Center_Enroll_Target
+- Definition: Proportion of centers/sites meeting enrollment targets.
+- Value type: Percentage string OR Unknown.
+- Allowed values: {"<number>%", Unknown}
+- Decision rules:
+  - Return as a percentage string with '%'.
+  - Only fill if explicitly reported, or if both numerator and denominator are explicitly stated
+    (centers meeting target / total centers).
+  - Otherwise output "Unknown".
+
+19) Reg_Audit
+- Definition: Major issues/findings from regulatory inspection/audit (e.g., GCP inspection findings, Form 483, warning letter).
+- Value type: {Yes/No/Unknown} with optional issue phrase.
+- Allowed values: {Yes, Yes: <issue phrase>, No, Unknown}
+- Decision rules:
+  - Output "Yes: <issue phrase>" ONLY if text explicitly mentions inspection/audit AND describes findings/observations/deficiencies.
+  - Output "No" ONLY if text explicitly states an inspection/audit occurred with no major findings (or explicitly "no findings/deficiencies").
+  - If inspection/audit is not mentioned, output "Unknown".
+  - Issue phrase should be short (e.g., "data integrity findings", "protocol deviations cited").
+
+20) Consistency_MRCT
+- Definition: In an MRCT, text explicitly states consistency of efficacy/safety across regions/ethnicities.
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" ONLY if text explicitly mentions MRCT/regional consistency (e.g., "consistent across regions", "no heterogeneity by region").
+  - Output "No" ONLY if text explicitly states lack of consistency/heterogeneity by region.
+  - Do NOT infer from multinational recruitment alone; otherwise "Unknown".
+
+21) Sponsor_Type
+- Definition: Type of trial sponsor/lead organization, categorized by institutional type.
+- Value type: Categorical (single-choice).
+- Allowed values: {Pharma, Biotech, Academic, Government, Unknown}
+- Decision rules:
+  - Identify the entity listed in <lead_sponsor> (or <collaborator> if needed) and infer its type using cues.
+  - If the sponsor name is generic/unclear and type cannot be determined confidently, output "Unknown".
+
+22) COVID_Impact
+- Definition: Whether the trial was affected by the COVID-19 pandemic (delays, deviations, missing data).
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" if text explicitly indicates COVID-19 caused trial impacts (e.g., delays, enrollment suspension, protocol deviations).
+  - Output "No" ONLY if text explicitly states the trial was not affected by COVID-19.
+  - If COVID-19 is merely the disease under study (not an impact factor), treat as "Unknown" unless impacts are stated.
+
+23) No_Competing_Trial
+- Definition: Number of other active trials investigating the same disease during the same time period.
+- Value type: Integer OR Unknown.
+- Allowed values: {0, 1, 2, ... , Unknown}
+- Decision rules:
+  - Return an integer ONLY when explicitly stated, OR when you have an external, explicitly-defined procedure to compute it (e.g., metadata cross-referencing with clear matching rules).
+  - If no explicit number can be supported, output "Unknown".
+  - If text explicitly states none, output 0.
+
+24) No_SOC
+- Definition: Number of standard-of-care (SOC) treatments available for the disease at trial start.
+- Value type: Integer OR Unknown.
+- Allowed values: {0, 1, 2, ... , Unknown}
+- Decision rules:
+  - Return an integer ONLY when explicitly stated (e.g., "no standard of care", "after failure of one SOC regimen", "multiple SOC options").
+  - If not explicitly stated, output "Unknown".
+  - If "no SOC" is explicitly stated, output 0.
+
+25) CRO
+- Definition: Whether Contract Research Organization (CRO) services are used in the study.
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" if text explicitly mentions CRO involvement.
+  - Output "No" ONLY if text explicitly states no CRO/fully in-house.
+  - Otherwise output "Unknown".
+
+26) CRO_Oper
+- Definition: Whether CRO operational services are used (site management, monitoring operations, patient enrollment support).
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" if text explicitly indicates CRO handled operational/logistical aspects (e.g., site monitoring oversight, recruitment outsourcing).
+  - Output "No" ONLY if explicitly stated.
+  - Otherwise output "Unknown".
+
+27) CRO_Stat
+- Definition: Whether CRO statistical services are used (sample size calculation, statistical analysis, biostatistics support).
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" if text explicitly indicates outsourced statistical work to a CRO/vendor.
+  - Output "No" ONLY if explicitly stated (e.g., "analyses performed in-house").
+  - Otherwise output "Unknown".
+
+28) CRO_DM
+- Definition: Whether CRO data management services are used (CRF design, EDC, database management, data management).
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" if text explicitly indicates CRO/vendor handled data management (CRF/EDC/database).
+  - Output "No" ONLY if explicitly stated.
+  - Otherwise output "Unknown".
+
+29) RBM
+- Definition: Whether Risk-Based Monitoring (RBM) is used (risk-based monitoring, centralized monitoring, adaptive risk-based strategy).
+- Value type: {Yes/No/Unknown}.
+- Allowed values: {Yes, No, Unknown}
+- Decision rules:
+  - Output "Yes" if text explicitly mentions RBM or equivalent (centralized monitoring framed as risk-based).
+  - Output "No" ONLY if text explicitly states RBM not used / only traditional on-site monitoring.
+  - Otherwise output "Unknown".

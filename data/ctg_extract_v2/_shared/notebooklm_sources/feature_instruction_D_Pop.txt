@@ -1,0 +1,197 @@
+Table: D_Pop
+
+Feature notes (definitions):
+Baseline_Severity_Score
+Type: Text (scale name + threshold / empty)
+Definition: Specific baseline disease severity score thresholds required for eligibility.
+Extraction rule: Return TEXT only if a named severity scale AND an explicit threshold are stated. Preserve the original wording exactly, including comparison operators and qualitative modifiers (e.g., “HAM-D > 20”, “PASI ≥ 12”, “CGI-S ≥ 4”, “baseline severity score above moderate”). Do NOT infer thresholds. Do NOT normalize, calculate, or restate. If disease severity is mentioned without a specific scale or threshold (e.g., “severe disease”), return empty.
+
+Cardio_Func
+Type: Catalog (yes / no / empty)
+Definition: Cardiac (heart) function criteria specified in eligibility.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies cardiac function requirements, cardiovascular disease exclusions, or heart-related thresholds (e.g., LVEF cutoffs, heart failure, arrhythmia). Return "no" if TEXT explicitly states that no cardiac-related eligibility restrictions apply or clearly limits eligibility criteria to non-cardiac systems. Otherwise return empty.
+
+Comorb_Prohib
+Type: Catalog (yes / no / empty)
+Definition: Explicit prohibition of participants with specific comorbidities.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies exclusion of participants with named comorbid diseases (e.g., cardiac, renal, hepatic, metabolic, infectious). Return "no" if TEXT explicitly states that comorbidities are allowed or that no disease-specific exclusions apply. Otherwise return empty.
+
+Comp_Biomarker
+Type: Catalog (yes / no / empty)
+Definition: Use of composite or integrated biomarker scores.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies use of composite or integrated biomarker scores (e.g., TMB, CPS, MSI-high). Return "no" if TEXT explicitly states that only single biomarkers are used or that composite indices are excluded. Otherwise return empty.
+
+Concom_Prohib
+Type: Catalog (yes / no / empty)
+Definition: Prohibited concomitant medications or therapies.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies prohibited concomitant medications, treatments, or therapies. Return "no" if TEXT explicitly states that concomitant therapies are allowed or unrestricted. Otherwise return empty.
+
+Disease_Stage
+Type: Text (descriptive disease stage / empty)
+Definition: Disease definition and stage(s) under investigation.
+Extraction rule: Return TEXT if disease stage or disease state is explicitly defined or clearly implied by clinical status (e.g., “early-stage breast cancer”, “advanced solid tumors”, “Stage II–III NSCLC”, “treatment-naive patients”, “relapsed multiple myeloma”). If only a general disease name is mentioned without stage or disease state, return empty.
+
+ECOG
+Type: Numeric (0–5 / empty)
+Definition: ECOG performance status requirement.
+Extraction rule: Return numeric ECOG value(s) only if explicitly stated. Preserve the original format exactly (e.g., “0–1”, “≤ 2”). Do NOT convert Karnofsky to ECOG. If ECOG is not mentioned, return empty.
+
+Gender_Criteria
+Type: Catalog (Male / Female / Both / no / empty)
+Definition: Sex eligibility criteria.
+Extraction rule: Return "Male", "Female", or "Both" if TEXT explicitly restricts or allows eligibility to specific sexes. Return "no" if TEXT explicitly states that no sex-based eligibility restrictions apply. Otherwise return empty.
+
+Geno_Biomarker
+Type: Catalog (yes / no / empty)
+Definition: Use of genomic or molecular biomarkers for eligibility.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies genomic or molecular selection criteria (e.g., mutations, gene expression, molecular alterations). Return "no" if TEXT explicitly states that no genomic or molecular selection criteria apply. Otherwise return empty.
+
+Hemo_Func
+Type: Catalog (yes / no / empty)
+Definition: Hematologic (blood) function criteria specified.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies hematologic thresholds, laboratory criteria, or blood-related exclusions. Return "no" if TEXT explicitly states that no hematologic restrictions apply. Otherwise return empty.
+
+Hepatic_Func
+Type: Catalog (yes / no / empty)
+Definition: Hepatic (liver) function criteria specified.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies liver-related thresholds or hepatic exclusions. Return "no" if TEXT explicitly states that no hepatic restrictions apply. Otherwise return empty.
+
+Karnofsky
+Type: Numeric (0–100 / empty)
+Definition: Karnofsky performance status requirement.
+Extraction rule: Return numeric Karnofsky score or range only if explicitly stated. Preserve the original format exactly. If only ECOG is mentioned, return empty.
+
+Kidney_Func
+Type: Catalog (yes / no / empty)
+Definition: Kidney (renal) function criteria specified.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies renal function thresholds or kidney-related exclusions. Return "no" if TEXT explicitly states that no renal restrictions apply. Otherwise return empty.
+
+Other_Biomarker
+Type: Catalog (yes / no / empty)
+Definition: Use of non-genomic, non-composite biomarkers.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies biochemical, serologic, imaging-based, or other non-genomic biomarkers. Return "no" if TEXT explicitly states that no biomarker-based selection criteria apply. Otherwise return empty.
+
+Pregnancy_Lactation
+Type: Catalog (yes / no / empty)
+Definition: Exclusion related to pregnancy or breastfeeding.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies exclusion of pregnant or lactating participants, pregnancy testing, contraception requirements, or reproductive precautions. Return "no" if TEXT explicitly states that no pregnancy- or lactation-related restrictions apply. Otherwise return empty.
+
+Prior_Line
+Type: Numeric (integer / empty)
+Definition: Minimum number of prior lines of therapy required.
+Extraction rule: Return numeric value only if TEXT explicitly states a minimum number of prior treatment lines. Do NOT infer from descriptive treatment history. If prior therapy is mentioned without a numeric requirement, return empty.
+
+Refractory
+Type: Catalog (yes / no / empty)
+Definition: Inclusion of refractory or treatment-resistant disease.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies refractory or treatment-resistant disease. Return "no" if TEXT explicitly states that eligibility is limited to non-refractory disease. Otherwise return empty.
+
+Relapsed
+Type: Catalog (yes / no / empty)
+Definition: Inclusion of relapsed or recurrent disease.
+Extraction rule: Return "yes" if TEXT explicitly mentions or clearly implies relapsed or recurrent disease. Return "no" if TEXT explicitly states that eligibility is limited to newly diagnosed disease only. Otherwise return empty.
+
+Washout_Period
+Type: Text (raw time expression / empty)
+Definition: Required interval since last therapy before enrollment.
+Extraction rule: Return TEXT only if a washout period or minimum interval is explicitly stated. Preserve the original wording and qualifiers exactly (e.g., “at least 14 days”, “greater than 4 weeks since last treatment”). Do NOT normalize, calculate, or convert units. If prior therapy is mentioned without a time restriction, return empty.
+
+GIST
+Type: Numeric (continuous / empty)
+Definition: Generalizability Index of Study Traits (GIST 2.0) score describing trial population representativeness.
+Extraction rule: Return numeric GIST value only if TEXT explicitly reports a GIST score or range. Preserve the original format exactly. Otherwise return empty.
+
+Prog_High_Risk
+Type: Text (raw biomarker text / empty)
+Definition: Biomarkers used to enroll high-risk participants to ensure sufficient clinical events (e.g., disease progression or death) for statistical power.
+Extraction rule: Return TEXT only if biomarkers are explicitly stated as being used to define, enrich, or select high-risk participants or populations with elevated progression or mortality risk. Preserve original wording exactly. Do NOT infer risk intent. Otherwise return empty.
+
+Prog_Strat
+Type: Text (raw biomarker text / empty)
+Definition: Biomarkers used to stratify participants during randomization and/or enrollment.
+Extraction rule: Return TEXT only if biomarkers are explicitly mentioned as stratification factors for randomization or enrollment. Preserve original wording exactly. Do NOT infer stratification use. Otherwise return empty.
+
+Prog_Molecular
+Type: Text (raw biomarker text / empty)
+Definition: Genetic, genomic, or proteomic biomarkers indicating intrinsic aggressive disease biology or active drivers of progression.
+Extraction rule: Return TEXT only if such biomarkers are explicitly described as indicators of disease aggressiveness or progression biology (e.g., mutations, expression, proliferation markers). Preserve original wording exactly. Do NOT infer biological role. Otherwise return empty.
+
+Prog_Inflamm
+Type: Text (raw biomarker text / empty)
+Definition: Inflammatory or immune-related biomarkers indicating a systemic environment favoring disease progression.
+Extraction rule: Return TEXT only if inflammatory biomarkers are explicitly mentioned as prognostic, progression-related, or reflective of systemic inflammation. Preserve original wording exactly. Do NOT infer inflammatory relevance. Otherwise return empty.
+
+Prog_Histologic
+Type: Text (raw biomarker text / empty)
+Definition: Histologic or pathology-based biomarkers indicating morphological or tissue-level disease features.
+Extraction rule: Return TEXT only if histologic biomarkers are explicitly mentioned (e.g., tumor grade, differentiation, TILs). Preserve original wording exactly. Do NOT reinterpret pathology terms. Otherwise return empty.
+
+Prog_Circulat
+Type: Text (raw biomarker text / empty)
+Definition: Circulating or liquid biopsy biomarkers reflecting current disease burden.
+Extraction rule: Return TEXT only if circulating or liquid biopsy biomarkers are explicitly mentioned (e.g., ctDNA, CTCs). Preserve original wording exactly. Do NOT infer liquid biopsy intent. Otherwise return empty.
+
+Pred_Enrich
+Type: Text (raw biomarker text / empty)
+Definition: Enrichment biomarkers used to restrict enrollment to marker-positive participants.
+Extraction rule: Return TEXT only if biomarkers are explicitly stated as required for enrollment or used to select eligible participants. Preserve original wording exactly. Do NOT infer enrichment intent. Otherwise return empty.
+
+Pred_Oncogenic
+Type: Text (raw biomarker text / empty)
+Definition: Biomarkers identifying specific oncogenic driver alterations.
+Extraction rule: Return TEXT only if specific oncogenic driver biomarkers are explicitly mentioned (e.g., driver mutations, amplifications, fusions). Preserve original wording exactly. Do NOT generalize cancer subtype names. Otherwise return empty.
+
+Pred_Response
+Type: Text (raw biomarker text / empty)
+Definition: Biomarkers predicting response to immune checkpoint inhibitors or other therapies.
+Extraction rule: Return TEXT only if biomarkers are explicitly mentioned as predictive of treatment response. Preserve original wording exactly. Do NOT infer predictive intent. Otherwise return empty.
+
+Pred_Others
+Type: Text (raw biomarker text / empty)
+Definition: Other or emerging biomarkers predicting treatment response or clinical outcomes.
+Extraction rule: Return TEXT only if non-standard or emerging predictive biomarkers are explicitly mentioned. Preserve original wording exactly. Do NOT reclassify into other biomarker categories. Otherwise return empty.
+
+Safety_Hema
+Type: Text (raw biomarker text / empty)
+Definition: Hematologic laboratory biomarkers monitored for treatment safety.
+Extraction rule: Return TEXT only if hematologic biomarkers are explicitly mentioned for safety or toxicity monitoring. Preserve original wording exactly. Do NOT infer safety intent. Otherwise return empty.
+
+Safety_Hepa
+Type: Text (raw biomarker text / empty)
+Definition: Hepatic toxicity biomarkers indicating drug-induced liver injury.
+Extraction rule: Return TEXT only if liver-related laboratory biomarkers are explicitly mentioned for toxicity or safety monitoring. Preserve original wording exactly. Do NOT infer hepatotoxicity intent. Otherwise return empty.
+
+Safety_Renal
+Type: Text (raw biomarker text / empty)
+Definition: Renal toxicity biomarkers indicating kidney injury or nephrotoxicity.
+Extraction rule: Return TEXT only if renal-related laboratory biomarkers are explicitly mentioned for toxicity or safety monitoring. Preserve original wording exactly. Do NOT infer nephrotoxicity intent. Otherwise return empty.
+
+Safety_Cardiac
+Type: Text (raw biomarker text / empty)
+Definition: Cardiac safety biomarkers used to monitor cardiomyopathy or myocarditis.
+Extraction rule: Return TEXT only if cardiac biomarkers or cardiac monitoring parameters are explicitly mentioned for safety. Preserve original wording exactly. Do NOT infer cardiac risk. Otherwise return empty.
+
+Safety_Immune
+Type: Text (raw biomarker text / empty)
+Definition: Immune or endocrine biomarkers associated with immune-related adverse event monitoring.
+Extraction rule: Return TEXT only if immune or endocrine biomarkers are explicitly mentioned for immune-related toxicity monitoring. Preserve original wording exactly. Do NOT infer immune toxicity intent. Otherwise return empty.
+
+Digit_Actig
+Type: Text (raw digital measure text / empty)
+Definition: Digital activity or actigraphy-based measures of physical movement or sleep patterns.
+Extraction rule: Return TEXT only if digital devices or digital measures capturing activity or sleep are explicitly mentioned. Preserve original wording exactly. Do NOT infer device use. Otherwise return empty.
+
+Digit_Physio
+Type: Text (raw digital measure text / empty)
+Definition: Digital or wearable physiologic devices monitoring vital signs.
+Extraction rule: Return TEXT only if digital or wearable devices are explicitly mentioned as monitoring physiologic parameters or vital signs. Preserve original wording exactly. Do NOT infer digital monitoring. Otherwise return empty.
+
+Digit_Vocal
+Type: Text (raw digital measure text / empty)
+Definition: Digital analysis of voice or speech patterns.
+Extraction rule: Return TEXT only if digital voice, speech, or acoustic analysis is explicitly mentioned. Preserve original wording exactly. Do NOT infer vocal analysis from symptom descriptions. Otherwise return empty.
+
+Digit_Cognit
+Type: Text (raw digital measure text / empty)
+Definition: Digital cognitive assessments measuring cognitive impairment or function.
+Extraction rule: Return TEXT only if digital or app-based cognitive measurements are explicitly mentioned. Preserve original wording exactly. Do NOT infer cognition testing. Otherwise return empty.

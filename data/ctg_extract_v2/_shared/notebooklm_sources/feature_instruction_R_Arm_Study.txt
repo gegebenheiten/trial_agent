@@ -1,0 +1,377 @@
+Table: R_Arm_Study
+
+1) AE_Spec
+- Definition: Percentage of participants with adverse events of special interest (AESI).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill when the text explicitly labels events as “AEs of special interest”, “AESI”, or equivalent.
+  - If explicit percent reported → return it.
+  - Else compute using Protocol A3 if AESI count AND denominator (group N) are explicit.
+  - If explicitly states no AESI → “0%”.
+  - Otherwise → “Unknown”.
+- Example:
+  - “AEs of special interest: 1%” → “1%”
+
+2) Assess_Adherence
+- Definition: Proportion of participants who completed key assessments or endpoint evaluations as planned.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill when the source explicitly reports completion/compliance for assessments/evaluations/endpoints.
+  - Accept phrases like: “assessment adherence”, “assessment compliance”, “completed endpoint evaluation”, “completed all evaluations”.
+  - If explicit percent → return it.
+  - Else compute using Protocol A3 if numerator and denominator are explicit for this group.
+  - If explicitly states none completed → “0%”.
+  - Otherwise → “Unknown”.
+
+3) Completer
+- Definition: Proportion of participants who completed the study (completed trial).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Prefer explicitly reported completion percentage.
+  - Otherwise compute ONLY if BOTH Completed and Started counts for the current group are explicitly given:
+    Completed / Started * 100 (use Protocol A3, with denominator = Started).
+  - If explicitly states nobody completed → “0%”.
+  - If denominator is unclear → “Unknown”.
+
+4) Cycle_Length
+- Definition: Length of treatment cycle in days.
+- Value_Type: Integer (days)
+- Output: integer (e.g., 21) / “Unknown”
+- Decision rules:
+  - Only fill when cycle length is explicitly stated for this regimen/arm.
+  - If “X-week cycle” is stated, convert to days = 7 * X.
+  - If “28-day cycle” is stated, return 28.
+  - If not stated → “Unknown”.
+
+5) Death_rate
+- Definition: Percentage of deaths for the current group.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if deaths are explicitly reported for THIS group (often in Participant Flow: reason “Death”).
+  - If explicit percent → return it.
+  - Else compute using Protocol A3 if death count and denominator are explicit.
+  - If explicitly states no deaths → “0%”.
+  - Otherwise → “Unknown”.
+
+6) Discont
+- Definition: Proportion of participants who discontinued the assigned treatment (any reason).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Use explicitly reported percent if available.
+  - Else compute ONLY if discontinued count AND relevant denominator (usually Started) are explicitly given (Protocol A3).
+  - If explicitly states no discontinuations → “0%”.
+  - If unclear denominator → “Unknown”.
+
+7) Discont_AE
+- Definition: Proportion of participants who discontinued assigned treatment due to adverse events/toxicity/intolerance.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only count discontinuations explicitly attributed to AE/toxicity/safety/intolerance/side effects.
+  - Compute only with explicit numerator and denominator (Protocol A3).
+  - If explicitly states no AE-related discontinuations → “0%”.
+  - Otherwise → “Unknown”.
+
+8) Discont_LE
+- Definition: Proportion who discontinued due to lack of efficacy or disease progression.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Identify discontinuations explicitly tied to progression / lack of efficacy / worsening / PD / clinical deterioration.
+  - Exclude AE-related or sponsor-driven discontinuations unless explicitly tied to progression.
+  - Compute only with explicit numerator and denominator (Protocol A3).
+  - If explicitly states no progression/LE discontinuations → “0%”.
+  - Otherwise → “Unknown”.
+
+9) Dosage_Level
+- Definition: Dosage level(s) for interventions in the current arm/group.
+- Value_Type: Text_String
+- Output: dose string(s) EXACTLY as in text, de-duplicated; join multiple with “; ”; or “Unknown”
+- Decision rules:
+  - Return dose strings as stated (keep units; do not convert).
+  - If multiple interventions: prefix each dose with intervention name:
+    “DrugA: 10 mg/kg; DrugB: 5 mg”
+  - If dose not explicitly stated → “Unknown”.
+
+10) Dosing_Frequency
+- Definition: Frequency of administration (normalized tokens).
+- Value_Type: Text_String (normalized schedule tokens)
+- Output: token(s) joined with “; ”, possibly prefixed by intervention name; or “Unknown”
+- Allowed tokens: QD, BID, TID, QW, Q2W, Q3W, Q4W
+- Decision rules:
+  - Only fill when schedule is explicitly indicated.
+  - Normalize mapping:
+    daily/once daily → QD
+    twice daily → BID
+    three times daily → TID
+    weekly → QW
+    every 2 weeks → Q2W
+    every 3 weeks → Q3W
+    every 4 weeks / every 28 days → Q4W
+  - If multiple interventions, prefix each frequency with the intervention name.
+  - If unclear → “Unknown”.
+
+11) Formulation
+- Definition: Immediate vs extended/delayed release formulation.
+- Value_Type: Text_String
+- Output: wording as in text (e.g., “extended-release”, “ER”, “immediate-release”); join multiple with “; ”; or “Unknown”
+- Decision rules:
+  - Only fill when IR/ER/SR/CR/delayed-release is explicitly stated.
+  - If not mentioned → “Unknown”.
+
+12) Grade34_Lab
+- Definition: Percentage of participants with Grade 3/4 laboratory abnormalities.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if Grade 3/4 (or “>=3”) lab abnormality is explicitly reported for THIS group.
+  - Use explicit percent or compute via Protocol A3 when counts and denominator are explicit.
+  - If explicitly states none → “0%”.
+  - Otherwise → “Unknown”.
+
+13) Grade34_TEAEs
+- Definition: Percentage of participants with Grade 3/4 treatment-emergent adverse events (TEAEs).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Must have BOTH Grade 3/4 (or “>=3”) AND TEAE/treatment-emergent explicitly for THIS group.
+  - Use explicit percent or compute via Protocol A3 (with explicit counts and denominator).
+  - If explicitly states none → “0%”.
+  - Otherwise → “Unknown”.
+
+14) Grade34_TRAEs
+- Definition: Percentage of participants with Grade 3/4 treatment-related adverse events (TRAEs).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Must have BOTH Grade 3/4 (or “>=3”) AND treatment-related/drug-related explicitly for THIS group.
+  - Do NOT substitute Grade34_TEAEs for Grade34_TRAEs.
+  - Use explicit percent or compute via Protocol A3.
+  - If explicitly states none → “0%”.
+  - Otherwise → “Unknown”.
+
+15) Group_Type
+- Definition: Label describing the role/type of the current trial arm.
+- Value_Type: Categorical
+- Allowed values (including “unable to judge”):
+  - Experimental
+  - Active Comparator
+  - Placebo Comparator
+  - Sham Comparator
+  - No Intervention
+  - Other
+  - Unknown
+- Decision rules:
+  - Scope: Decide ONLY for THIS arm. Prefer arm-scoped structured fields and arm↔intervention linkage.
+  - 1) Use structured arm_group_type if provided for THIS arm.
+  - 2) Else use explicit keywords in group_title_raw/group_desc_raw:
+       Sham Comparator: “sham”, “simulated procedure”, “mock”
+       Placebo Comparator: “placebo”, “matched placebo”, “vehicle”, “saline placebo”
+       No Intervention: “no intervention”, “observation only”, “watchful waiting”, “no treatment”, “natural history”
+  - 3) Else infer using study object ONLY if arm-scoped linkage is unambiguous:
+       - Placebo/vehicle/saline linked intervention → Placebo Comparator
+       - Sham/simulated procedure linked intervention → Sham Comparator
+       - No linked intervention AND explicit observation-only arm text → No Intervention
+  - 4) Experimental vs Active Comparator:
+       - Experimental: explicit investigational/study-specific intervention for THIS arm (e.g., “study drug”, “investigational”, novel code-name).
+       - Active Comparator: explicit marketed/approved therapy clearly used as comparator/benchmark for THIS arm.
+       - If ambiguous which arm gets which, return “Unknown”.
+  - 5) Single-arm studies:
+       - If clearly investigational → Experimental
+       - If clearly observation/no treatment → No Intervention
+       - If marketed therapy without investigational signal and without comparator framing → Other
+  - 6) Conflict handling:
+       - Prefer most specific comparator signals: Sham > Placebo > No Intervention
+       - For remaining conflicts, if cannot resolve by arm-specific evidence → “Unknown”
+  - 7) Do NOT use masking/allocation alone.
+  - If still uncertain → “Unknown”.
+
+16) Inc_Grade34_TEAEs
+- Definition: Incidence rate (events / total exposure time × 100) of Grade 3/4 TEAEs.
+- Value_Type: Text_String (rate expression)
+- Output: keep as in text (e.g., “0.8 per 100 PY”, “0.8/100 PY”); or “Unknown”
+- Decision rules:
+  - Only fill when an incidence rate is explicitly reported.
+  - Do NOT invent exposure time or compute incidence if not stated.
+
+17) Inc_TEAES
+- Definition: Incidence rate (events / total exposure time × 100) of TEAEs.
+- Value_Type: Text_String (rate expression)
+- Output: keep as in text; or “Unknown”
+- Decision rules:
+  - Only fill when an incidence rate is explicitly reported.
+  - Do NOT invent exposure time or compute incidence if not stated.
+
+18) Line0 / Line1 / Line2 / Line3
+- Definition:
+  - Line0: treatment-naïve proportion
+  - Line1: proportion with 1 prior line
+  - Line2: proportion with 2 prior lines
+  - Line3: proportion with ≥3 prior lines
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill when explicitly reported for THIS group OR when numerator+denominator are explicit (Protocol A3).
+  - If explicitly states none in that category → “0%”.
+  - Otherwise → “Unknown”.
+
+19) Loss_FU
+- Definition: Proportion of participants lost to follow-up.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Accept “lost to follow-up”, “failed to return”, “no longer followed”, “did not respond”, etc.
+  - Compute only with explicit numerator+denominator (Protocol A3).
+  - If explicitly states no lost to follow-up → “0%”.
+  - Otherwise → “Unknown”.
+
+20) Med_Discont
+- Definition: Median time to discontinuation of assigned treatment.
+- Value_Type: Duration_String
+- Output: duration exactly as stated (e.g., “6.3 months”); or “Unknown”
+- Decision rules:
+  - Only fill when “median” is explicitly stated for THIS group.
+  - Do not convert units.
+
+21) Med_Follow_Up
+- Definition: Median follow-up duration.
+- Value_Type: Duration_String
+- Output: duration exactly as stated; or “Unknown”
+- Decision rules:
+  - Only fill when “median” is explicitly stated for THIS group.
+  - Do not convert units.
+
+22) Med_Treat
+- Definition: Median treatment duration.
+- Value_Type: Duration_String
+- Output: duration exactly as stated; or “Unknown”
+- Decision rules:
+  - Only fill when “median” is explicitly stated for THIS group.
+  - Do not convert units.
+
+23) Missing_All / Missing_Key_SE / Missing_PE
+- Definition:
+  - Missing_All: proportion missing overall
+  - Missing_Key_SE: proportion missing for key secondary endpoint
+  - Missing_PE: proportion missing for primary endpoint
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if explicitly stated OR compute with explicit numerator+denominator (Protocol A3).
+  - If explicitly states no missing → “0%”.
+  - Otherwise → “Unknown”.
+
+24) No_Dosage
+- Definition: Number of distinct dosage levels in Dosage_Level for the current group.
+- Value_Type: Integer
+- Output: integer count / “Unknown”
+- Decision rules:
+  - Only fill if you can explicitly list distinct dose strings from text (after de-duplication).
+  - If Dosage_Level has k distinct entries → No_Dosage = k.
+  - If dosage is unclear/implicit → “Unknown”.
+
+25) Prop_ECOG0 / Prop_ECOG1 / Prop_ECOG2 / Prop_ECOG3
+- Definition: Proportion with ECOG score equal to 0/1/2/3 (respectively).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill when explicitly reported for THIS group OR compute with explicit numerator+denominator (Protocol A3).
+  - If explicitly states none at that ECOG level → “0%”.
+  - Otherwise → “Unknown”.
+
+26) Prop_Hepatic / Prop_Renal
+- Definition: Proportion with adequate hepatic / renal function.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill when explicitly reported for THIS group OR compute with explicit numerator+denominator (Protocol A3).
+  - Do NOT infer adequacy thresholds.
+  - If explicitly states none adequate → “0%”.
+  - Otherwise → “Unknown”.
+
+27) Prop_HighRisk / Prop_Refractory / Prop_Relapsed
+- Definition: Proportion at high risk / refractory / relapsed (as defined by the source).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill when explicitly reported for THIS group OR compute with explicit numerator+denominator (Protocol A3).
+  - Do NOT infer definitions.
+  - If explicitly states none in category → “0%”.
+  - Otherwise → “Unknown”.
+
+28) Protocol_Viol
+- Definition: Proportion of participants with major protocol violations/deviations.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Accept “protocol violation”, “protocol deviation”, “non-compliance”, etc.
+  - Compute only with explicit numerator+denominator (Protocol A3).
+  - If explicitly states no protocol violations → “0%”.
+  - Otherwise → “Unknown”.
+
+29) SAEs
+- Definition: Percentage of participants with serious adverse events (SAE).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if SAE/serious adverse events are explicitly reported for THIS group.
+  - Use explicit percent or compute via Protocol A3 (counts + denominator explicit).
+  - If explicitly states no SAEs → “0%”.
+  - Otherwise → “Unknown”.
+
+30) TEAEs
+- Definition: Percentage of participants with treatment-emergent adverse events (TEAE).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if TEAE/treatment-emergent is explicitly mentioned for THIS group.
+  - Use explicit percent or compute via Protocol A3.
+  - If explicitly states no TEAEs → “0%”.
+  - Otherwise → “Unknown”.
+
+31) TRAEs
+- Definition: Percentage of participants with treatment-related adverse events (TRAE).
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if “treatment-related/drug-related/related to study treatment” is explicit for THIS group.
+  - Do NOT substitute TEAEs for TRAEs.
+  - Use explicit percent or compute via Protocol A3.
+  - If explicitly states no TRAEs → “0%”.
+  - Otherwise → “Unknown”.
+
+32) Treat_Adherence
+- Definition: Proportion who took study drug as prescribed.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if adherence/compliance with drug intake is explicitly reported for THIS group.
+  - Use explicit percent or compute via Protocol A3.
+  - If explicitly states no adherence (none took as prescribed) → “0%”.
+  - Otherwise → “Unknown”.
+
+33) Visit_Adherence
+- Definition: Proportion who attended scheduled visits within allowed windows.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Only fill if visit attendance/compliance is explicitly reported for THIS group.
+  - Use explicit percent or compute via Protocol A3.
+  - If explicitly states no one attended as scheduled → “0%”.
+  - Otherwise → “Unknown”.
+
+34) Withdrawer
+- Definition: Proportion who withdrew informed consent / refused continuation.
+- Value_Type: Percentage_String
+- Output: “NN%” / “NN.N%” / “0%” / “Unknown”
+- Decision rules:
+  - Capture withdrawal/refusal/patient request, etc., for THIS group.
+  - Compute only with explicit numerator+denominator (Protocol A3).
+  - If explicitly states no withdrawals → “0%”.
+  - Otherwise → “Unknown”.
+
