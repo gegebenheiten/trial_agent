@@ -22,6 +22,7 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Literal
+import re
 
 import polars as pl
 import numpy as np
@@ -347,6 +348,7 @@ class DatasetConfig:
     
     impute_strategy: Literal["median", "mean", "zero", "none"] = "median"
     scale_features: bool = True
+    phase_filter: list[str] = field(default_factory=list)
 
 
 # =============================================================================
@@ -467,6 +469,15 @@ class TrialDataset:
         """Load and preprocess all data."""
         # Step 1: Load and preprocess target
         target_df = self._load_target()
+        extracted_ids = self._load_extracted_ids_union()
+        if extracted_ids:
+            target_df = target_df.filter(
+                pl.col("StudyID").cast(str).is_in(sorted(extracted_ids))
+            )
+        target_df = self._filter_by_phase(target_df)
+        if target_df.is_empty():
+            phases = ", ".join(self.config.phase_filter) if self.config.phase_filter else "none"
+            raise ValueError(f"No labeled samples after phase filter ({phases}).")
         
         # Step 2: Load and classify features
         df, numeric_cols, categorical_cols, text_cols = self._load_features(target_df)
@@ -518,6 +529,86 @@ class TrialDataset:
         df_labeled = pl.concat([df_success, df_fail])
         
         return df_labeled.select(["StudyID", "outcome_type", "label"])
+
+    def _load_extracted_ids_union(self) -> set[str]:
+        """Load union of StudyID from merged tables (NotebookLM extracted)."""
+        if not self.tables_dir.exists():
+            return set()
+        ids: set[str] = set()
+        for csv_path in self.tables_dir.glob("*.csv"):
+            try:
+                df = pl.read_csv(csv_path, columns=["StudyID"])
+            except Exception:
+                df = pl.read_csv(csv_path)
+                if "StudyID" not in df.columns:
+                    continue
+                df = df.select(["StudyID"])
+            for v in df.get_column("StudyID").to_list():
+                if v is None:
+                    continue
+                s = str(v).strip()
+                if s:
+                    ids.add(s)
+        return ids
+
+    def _filter_by_phase(self, target_df: pl.DataFrame) -> pl.DataFrame:
+        """Filter target_df by Study_Phase values if phase_filter is set."""
+        phases = [str(p).strip() for p in self.config.phase_filter if str(p).strip()]
+        if not phases:
+            return target_df
+
+        design_path = self.tables_dir / "D_Design_all.csv"
+        if not design_path.exists():
+            return target_df
+
+        try:
+            design_df = pl.read_csv(design_path, columns=["StudyID", "Study_Phase"])
+        except Exception:
+            design_df = pl.read_csv(design_path)
+            if "StudyID" not in design_df.columns or "Study_Phase" not in design_df.columns:
+                return target_df
+            design_df = design_df.select(["StudyID", "Study_Phase"])
+
+        design_df = design_df.with_columns(
+            pl.col("Study_Phase").cast(str).str.strip_chars().alias("Study_Phase")
+        )
+
+        phase_digits: set[str] = set()
+        for p in phases:
+            phase_digits.update(re.findall(r"\d+", p))
+
+        if phase_digits:
+            phase_list = sorted(phase_digits)
+            has_phase1 = "1" in phase_list
+            phase_pattern = r"\b(?:{})\b".format("|".join(re.escape(p) for p in phase_list))
+            design_df = design_df.with_columns(
+                pl.col("Study_Phase").str.to_lowercase().alias("_phase_lc"),
+                pl.col("Study_Phase")
+                .str.to_lowercase()
+                .str.contains(phase_pattern)
+                .alias("_digit_match"),
+            )
+            if has_phase1:
+                design_df = design_df.with_columns(
+                    (
+                        pl.col("_digit_match")
+                        | pl.col("_phase_lc").str.contains(r"early\s*phase\s*(1|one)")
+                    ).alias("_phase_match")
+                )
+            else:
+                design_df = design_df.with_columns(pl.col("_digit_match").alias("_phase_match"))
+            design_df = design_df.filter(pl.col("_phase_match"))
+        else:
+            phase_set = {p.lower() for p in phases}
+            design_df = design_df.filter(
+                pl.col("Study_Phase").str.to_lowercase().is_in(sorted(phase_set))
+            )
+
+        if design_df.is_empty():
+            return target_df.filter(pl.lit(False))
+
+        keep_ids = design_df.get_column("StudyID").cast(str).unique()
+        return target_df.filter(pl.col("StudyID").cast(str).is_in(keep_ids))
     
     def _load_features(
         self, target_df: pl.DataFrame
@@ -1077,6 +1168,7 @@ def load_trial_dataset(
     impute_strategy: Literal["median", "mean", "zero", "none"] = "median",
     scale_features: bool = True,
     text_as_bool: bool = False,
+    phase_filter: list[str] | str | None = None,
     keep_features_csv: str | Path | None = None,
 ) -> TrialDataset:
     """
@@ -1092,6 +1184,7 @@ def load_trial_dataset(
         categorical_encoding: "label" or "onehot"
         impute_strategy: "median", "mean", "zero", or "none" (keep NaN for native handling)
         scale_features: Whether to scale features
+        phase_filter: Phase filter(s), e.g. ["2"] or "1,2"
         keep_features_csv: CSV with columns [table, Variable] to force-include
         
     Returns:
@@ -1106,6 +1199,11 @@ def load_trial_dataset(
     config.split.test_size = test_size
     config.impute_strategy = impute_strategy
     config.scale_features = scale_features
+    if phase_filter:
+        if isinstance(phase_filter, str):
+            config.phase_filter = [p.strip() for p in phase_filter.split(",") if p.strip()]
+        else:
+            config.phase_filter = [str(p).strip() for p in phase_filter if str(p).strip()]
 
     if keep_features_csv:
         keep_df = pl.read_csv(keep_features_csv)

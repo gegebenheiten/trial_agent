@@ -28,12 +28,60 @@ import importlib.util
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
+import re
 
 import numpy as np
 import polars as pl
 
+from ctg_ml_pipeline.data.dataset import FeatureType
+
 if TYPE_CHECKING:
     from ctg_ml_pipeline.data.dataset import TrialDataset
+
+
+def _sanitize_token(value: str) -> str:
+    return re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip("-") or "na"
+
+
+def _build_auto_output_dir(
+    *,
+    base: str,
+    models: list[str],
+    cv_strategy: str,
+    cv_folds: int,
+    no_cv: bool,
+    time_split: bool,
+    max_missing_rate: float,
+    select_stage: str,
+    select_method: str,
+    select_top_ratio: float,
+    text_as_bool: bool,
+    phase_filter: list[str],
+    tuned: bool,
+) -> str:
+    models_tag = "all" if models else "none"
+    if models and len(models) > 1:
+        models_tag = "all" if set(models) == set(available_models()) else "-".join(models)
+    phase_tag = "all" if not phase_filter else "phase" + "-".join(phase_filter)
+    cv_tag = "nocv" if no_cv else f"{cv_strategy}{cv_folds}"
+    split_tag = "time" if time_split else "random"
+    mode_tag = split_tag if no_cv else cv_tag
+    miss_tag = f"miss{max_missing_rate:g}"
+    sel_tag = f"{select_stage}-{select_method}-{select_top_ratio:g}"
+    text_tag = "textbool" if text_as_bool else "notext"
+    tune_tag = "tune" if tuned else "notune"
+    parts = [
+        "exp",
+        phase_tag,
+        mode_tag,
+        miss_tag,
+        sel_tag,
+        text_tag,
+        tune_tag,
+        models_tag,
+    ]
+    name = "_".join(_sanitize_token(p) for p in parts if p)
+    return str(Path(base) / name)
 
 
 # =============================================================================
@@ -565,6 +613,7 @@ def train_and_evaluate(
     cv_scoring: str | None = None,
     n_bootstrap: int = 1000,
     random_state: int = 42,
+    cv_only: bool = False,
 ) -> ModelResult:
     """
     Train and evaluate a model with comprehensive metrics.
@@ -590,45 +639,83 @@ def train_and_evaluate(
     )
     from sklearn.model_selection import cross_val_score
     
-    # Get train/test split with indices
-    X_train, X_test, y_train, y_test, train_idx, test_idx = dataset.get_train_test_split(return_indices=True)
-    
-    # Create and train model
+    # Create model
     model = _get_model(model_name, random_state)
-    
-    # Cross-validation
-    if cv_scoring is None:
-        cv_scoring = "accuracy" if cv_strategy == "loo" else "roc_auc"
-    cv_splitter = _build_cv(np.asarray(y_train), cv_folds, cv_strategy, random_state)
-    if cv_splitter is None:
-        cv_scores = np.array([])
-    else:
+
+    if cv_only:
+        X = dataset.X
+        y = dataset.y
+
+        if cv_scoring is None:
+            cv_scoring = "accuracy" if cv_strategy == "loo" else "roc_auc"
+        cv_splitter = _build_cv(np.asarray(y), cv_folds, cv_strategy, random_state)
+        if cv_splitter is None:
+            raise RuntimeError("CV splitter is None (insufficient samples or classes).")
+
+        # CV predictions
+        from sklearn.model_selection import cross_val_predict
+        y_pred = cross_val_predict(model, X, y, cv=cv_splitter, method="predict")
+        y_prob = None
+        if hasattr(model, "predict_proba"):
+            y_prob = cross_val_predict(model, X, y, cv=cv_splitter, method="predict_proba")[:, 1]
+        elif hasattr(model, "decision_function"):
+            y_prob = cross_val_predict(model, X, y, cv=cv_splitter, method="decision_function")
+            y_prob = (y_prob - y_prob.min()) / (y_prob.max() - y_prob.min() + 1e-10)
+
         cv_scores = cross_val_score(
-            model, X_train, y_train,
+            model, X, y,
             cv=cv_splitter,
             scoring=cv_scoring,
             error_score=np.nan,
         )
-    
-    # Train on full training set
-    model.fit(X_train, y_train)
-    
-    # Predictions
-    y_train_pred = model.predict(X_train)
-    y_test_pred = model.predict(X_test)
-    
-    # Get probabilities
-    y_prob = None
-    if hasattr(model, "predict_proba"):
-        y_prob = model.predict_proba(X_test)[:, 1]
-    elif hasattr(model, "decision_function"):
-        y_prob = model.decision_function(X_test)
-        # Normalize to [0, 1]
-        y_prob = (y_prob - y_prob.min()) / (y_prob.max() - y_prob.min() + 1e-10)
-    
-    # Basic metrics
-    train_acc = accuracy_score(y_train, y_train_pred)
-    test_acc = accuracy_score(y_test, y_test_pred)
+
+        # Fit on full dataset for importances / SHAP
+        model.fit(X, y)
+
+        train_acc = accuracy_score(y, y_pred)
+        test_acc = train_acc
+        y_train = y
+        y_test = y
+        y_train_pred = y_pred
+        y_test_pred = y_pred
+        test_idx = np.arange(len(y))
+    else:
+        # Get train/test split with indices
+        X_train, X_test, y_train, y_test, _, test_idx = dataset.get_train_test_split(return_indices=True)
+
+        # Cross-validation on training set
+        if cv_scoring is None:
+            cv_scoring = "accuracy" if cv_strategy == "loo" else "roc_auc"
+        cv_splitter = _build_cv(np.asarray(y_train), cv_folds, cv_strategy, random_state)
+        if cv_splitter is None:
+            cv_scores = np.array([])
+        else:
+            cv_scores = cross_val_score(
+                model, X_train, y_train,
+                cv=cv_splitter,
+                scoring=cv_scoring,
+                error_score=np.nan,
+            )
+
+        # Train on full training set
+        model.fit(X_train, y_train)
+
+        # Predictions
+        y_train_pred = model.predict(X_train)
+        y_test_pred = model.predict(X_test)
+
+        # Get probabilities
+        y_prob = None
+        if hasattr(model, "predict_proba"):
+            y_prob = model.predict_proba(X_test)[:, 1]
+        elif hasattr(model, "decision_function"):
+            y_prob = model.decision_function(X_test)
+            # Normalize to [0, 1]
+            y_prob = (y_prob - y_prob.min()) / (y_prob.max() - y_prob.min() + 1e-10)
+
+        # Basic metrics
+        train_acc = accuracy_score(y_train, y_train_pred)
+        test_acc = accuracy_score(y_test, y_test_pred)
     
     # Confusion matrix
     cm = confusion_matrix(y_test, y_test_pred)
@@ -714,6 +801,7 @@ def compare_models(
     cv_scoring: str | None = None,
     n_bootstrap: int = 1000,
     random_state: int = 42,
+    cv_only: bool = False,
 ) -> ComparisonResult:
     """
     Compare multiple models on the dataset.
@@ -759,6 +847,7 @@ def compare_models(
             cv_scoring,
             n_bootstrap,
             random_state,
+            cv_only=cv_only,
         )
         results.append(result)
     
@@ -919,10 +1008,12 @@ def run_experiment(
     cv_folds: int = 5,
     cv_strategy: Literal["kfold", "loo"] = "kfold",
     cv_scoring: str | None = None,
+    cv_only: bool = False,
     select_stage: Literal["filter", "embedded", "none"] = "none",
     select_method: str = "mutual_info",
     select_top_ratio: float = 0.2,
     text_as_bool: bool = False,
+    phase_filter: list[str] | str | None = None,
 ) -> ComparisonResult:
     """
     Run a complete ML experiment.
@@ -955,6 +1046,7 @@ def run_experiment(
         max_missing_rate=max_missing_rate,
         time_split=time_split,
         text_as_bool=text_as_bool,
+        phase_filter=phase_filter,
     )
 
     if select_stage != "none":
@@ -962,19 +1054,22 @@ def run_experiment(
             filter_stage_matrix,
             embedded_stage_matrix,
         )
-        X_train, _, y_train, _, _, _ = dataset.get_train_test_split(return_indices=True)
+        if cv_only:
+            X_sel, y_sel = dataset.X, dataset.y
+        else:
+            X_sel, _, y_sel, _, _, _ = dataset.get_train_test_split(return_indices=True)
         if select_stage == "filter":
             result = filter_stage_matrix(
-                X_train,
-                y_train,
+                X_sel,
+                y_sel,
                 dataset.feature_names,
                 method=select_method,
                 top_ratio=select_top_ratio,
             )
         else:
             result = embedded_stage_matrix(
-                X_train,
-                y_train,
+                X_sel,
+                y_sel,
                 dataset.feature_names,
                 method=select_method,
                 top_ratio=select_top_ratio,
@@ -992,7 +1087,14 @@ def run_experiment(
             }
             (output_path / "feature_selection.json").write_text(json.dumps(payload, indent=2))
 
-    dataset.summary()
+    if cv_only:
+        n_num = sum(1 for t in dataset.feature_types.values() if t == FeatureType.NUMERIC)
+        n_cat = sum(1 for t in dataset.feature_types.values() if t == FeatureType.CATEGORICAL)
+        print("\nCV-only mode (no holdout split)")
+        print(f"Samples: {len(dataset)}")
+        print(f"Features: {len(dataset.feature_names)} (numeric={n_num}, categorical={n_cat})")
+    else:
+        dataset.summary()
     
     # Train models
     print("\n[2/3] Training models...")
@@ -1002,6 +1104,7 @@ def run_experiment(
         cv_folds=cv_folds,
         cv_strategy=cv_strategy,
         cv_scoring=cv_scoring,
+        cv_only=cv_only,
     )
     
     # Show results
@@ -1207,7 +1310,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output-dir",
         default="output/experiment_results_all",
-        help="Output directory for results",
+        help="Output directory for results, or 'auto' to build from parameters",
+    )
+    parser.add_argument(
+        "--phase",
+        nargs="+",
+        default=[],
+        help="Filter by Study_Phase (e.g. --phase 2 or --phase 1 2 or --phase 1,2)",
     )
     parser.add_argument(
         "--max-missing-rate",
@@ -1237,6 +1346,16 @@ if __name__ == "__main__":
         choices=["kfold", "loo"],
         default="kfold",
         help="Cross-validation strategy (kfold or loo)",
+    )
+    parser.add_argument(
+        "--no-cv",
+        action="store_true",
+        help="Disable cross-validation",
+    )
+    parser.add_argument(
+        "--use-test-split",
+        action="store_true",
+        help="Use holdout train/test split alongside CV",
     )
     parser.add_argument(
         "--cv-scoring",
@@ -1299,6 +1418,40 @@ if __name__ == "__main__":
     if any(m.lower() == "all" for m in models):
         models = available_models()
 
+    phase_filter: list[str] = []
+    for raw in args.phase:
+        if not raw:
+            continue
+        for part in str(raw).split(","):
+            part = part.strip()
+            if part:
+                phase_filter.append(part)
+
+    select_method = args.select_method
+    if not select_method:
+        select_method = "mutual_info" if args.select_stage == "filter" else "l1"
+
+    output_dir = args.output_dir
+    if str(output_dir).lower() == "auto":
+        output_dir = _build_auto_output_dir(
+            base="output",
+            models=models,
+            cv_strategy=args.cv_strategy,
+            cv_folds=args.cv_folds,
+            no_cv=args.no_cv,
+            time_split=not args.no_time_split,
+            max_missing_rate=args.max_missing_rate,
+            select_stage=args.select_stage,
+            select_method=select_method,
+            select_top_ratio=args.select_top_ratio,
+            text_as_bool=args.text_as_bool,
+            phase_filter=phase_filter,
+            tuned=args.tune,
+        )
+
+    if args.no_cv:
+        print("CV disabled (--no-cv)")
+
     if args.tune:
         from ctg_ml_pipeline.data.dataset import load_trial_dataset
         from ctg_ml_pipeline.modeling.tuning import tune_models
@@ -1308,6 +1461,8 @@ if __name__ == "__main__":
             target_csv=args.target_csv,
             max_missing_rate=args.max_missing_rate,
             time_split=not args.no_time_split,
+            text_as_bool=args.text_as_bool,
+            phase_filter=phase_filter,
         )
 
         timeout = args.tune_timeout if args.tune_timeout > 0 else None
@@ -1321,9 +1476,9 @@ if __name__ == "__main__":
             timeout=timeout,
         )
 
-        output_dir = Path(args.output_dir) if args.output_dir else Path("output/experiment_results_all")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        tuning_path = Path(args.tune_output) if args.tune_output else (output_dir / "tuning_results.json")
+        output_path = Path(output_dir) if output_dir else Path("output/experiment_results_all")
+        output_path.mkdir(parents=True, exist_ok=True)
+        tuning_path = Path(args.tune_output) if args.tune_output else (output_path / "tuning_results.json")
         payload = {
             name: {
                 "best_score": result.best_score,
@@ -1339,22 +1494,23 @@ if __name__ == "__main__":
         if args.tune_only:
             raise SystemExit(0)
 
-    select_method = args.select_method
-    if not select_method:
-        select_method = "mutual_info" if args.select_stage == "filter" else "l1"
+    cv_folds = 0 if args.no_cv else args.cv_folds
+    cv_only = (not args.no_cv) and (not args.use_test_split)
 
     run_experiment(
         group_dir=args.group_dir,
         target_csv=args.target_csv,
-        output_dir=args.output_dir,
+        output_dir=output_dir,
         max_missing_rate=args.max_missing_rate,
         time_split=not args.no_time_split,
         models=models,
-        cv_folds=args.cv_folds,
+        cv_folds=cv_folds,
         cv_strategy=args.cv_strategy,
         cv_scoring=args.cv_scoring or None,
         select_stage=args.select_stage,
         select_method=select_method,
         select_top_ratio=args.select_top_ratio,
         text_as_bool=args.text_as_bool,
+        cv_only=cv_only,
+        phase_filter=phase_filter,
     )
