@@ -102,3 +102,72 @@ def embedded_stage(
     top_k = max(1, int(len(ranked) * top_ratio))
     selected = [name for name, _ in ranked[:top_k]]
     return SelectionResult(selected_features=selected, scores=score_map)
+
+
+def filter_stage_matrix(
+    X,
+    y,
+    feature_names: list[str],
+    method: str = "mutual_info",
+    top_ratio: float = 0.2,
+) -> SelectionResult:
+    """Filter stage selection on encoded matrix features."""
+    _require_sklearn()
+    import numpy as np
+    from sklearn.feature_selection import f_classif, mutual_info_classif, chi2
+
+    X_arr = np.asarray(X)
+    y_arr = np.asarray(y)
+
+    if method == "fisher" or method == "anova":
+        scores, _ = f_classif(X_arr, y_arr)
+    elif method == "mutual_info":
+        scores = mutual_info_classif(X_arr, y_arr, discrete_features="auto")
+    elif method == "chi2":
+        scores, _ = chi2(X_arr, y_arr)
+    else:
+        raise ValueError("method must be one of: fisher, anova, mutual_info, chi2")
+
+    score_map = {name: float(score) for name, score in zip(feature_names, scores)}
+    ranked = sorted(score_map.items(), key=lambda kv: kv[1], reverse=True)
+    top_k = max(1, int(len(ranked) * top_ratio))
+    selected = [name for name, _ in ranked[:top_k]]
+    return SelectionResult(selected_features=selected, scores=score_map)
+
+
+def embedded_stage_matrix(
+    X,
+    y,
+    feature_names: list[str],
+    method: str = "l1",
+    top_ratio: float = 0.2,
+) -> SelectionResult:
+    """Embedded selection on encoded matrix features."""
+    _require_sklearn()
+    import numpy as np
+    from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+    from sklearn.linear_model import LogisticRegression
+
+    X_arr = np.asarray(X)
+    y_arr = np.asarray(y)
+
+    if method == "l1":
+        model = LogisticRegression(penalty="l1", solver="liblinear", max_iter=1000)
+        model.fit(X_arr, y_arr)
+        scores = np.abs(model.coef_).sum(axis=0)
+    elif method == "rf":
+        model = RandomForestClassifier(n_estimators=300, random_state=42)
+        model.fit(X_arr, y_arr)
+        scores = model.feature_importances_
+    elif method == "gbdt":
+        model = GradientBoostingClassifier(random_state=42)
+        model.fit(X_arr, y_arr)
+        scores = model.feature_importances_
+    else:
+        raise ValueError("method must be one of: l1, rf, gbdt")
+
+    score_map = {name: float(score) for name, score in zip(feature_names, scores)}
+    ranked = sorted(score_map.items(), key=lambda kv: kv[1], reverse=True)
+    top_k = max(1, int(len(ranked) * top_ratio))
+    selected = [name for name, _ in ranked[:top_k]]
+    return SelectionResult(selected_features=selected, scores=score_map)

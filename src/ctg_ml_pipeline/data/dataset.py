@@ -605,9 +605,9 @@ class TrialDataset:
                 if feat_type == FeatureType.EXCLUDE and not force_keep:
                     continue
                 
-                # Check missing rate (unless explicitly kept)
+                # Check missing rate
                 missing_rate = table_df.get_column(col).null_count() / len(table_df)
-                if missing_rate > cfg.max_missing_rate and not force_keep:
+                if missing_rate > cfg.max_missing_rate:
                     continue
                 
                 # Handle based on feature type
@@ -904,6 +904,19 @@ class TrialDataset:
             Dict mapping feature name to list of text values
         """
         return self.text_features
+
+    def select_features(self, selected: list[str]) -> None:
+        """Restrict dataset to selected feature names."""
+        if not selected:
+            return
+        selected_set = set(selected)
+        indices = [i for i, name in enumerate(self.feature_names) if name in selected_set]
+        if not indices:
+            return
+        self.X = self.X[:, indices]
+        self.feature_names = [self.feature_names[i] for i in indices]
+        self.feature_types = {k: v for k, v in self.feature_types.items() if k in selected_set}
+        self.feature_stats = {k: v for k, v in self.feature_stats.items() if k in selected_set}
     
     def set_text_embeddings(
         self,

@@ -914,6 +914,9 @@ def run_experiment(
     cv_folds: int = 5,
     cv_strategy: Literal["kfold", "loo"] = "kfold",
     cv_scoring: str | None = None,
+    select_stage: Literal["filter", "embedded", "none"] = "none",
+    select_method: str = "mutual_info",
+    select_top_ratio: float = 0.2,
 ) -> ComparisonResult:
     """
     Run a complete ML experiment.
@@ -946,6 +949,42 @@ def run_experiment(
         max_missing_rate=max_missing_rate,
         time_split=time_split,
     )
+
+    if select_stage != "none":
+        from ctg_ml_pipeline.preprocess.selection import (
+            filter_stage_matrix,
+            embedded_stage_matrix,
+        )
+        X_train, _, y_train, _, _, _ = dataset.get_train_test_split(return_indices=True)
+        if select_stage == "filter":
+            result = filter_stage_matrix(
+                X_train,
+                y_train,
+                dataset.feature_names,
+                method=select_method,
+                top_ratio=select_top_ratio,
+            )
+        else:
+            result = embedded_stage_matrix(
+                X_train,
+                y_train,
+                dataset.feature_names,
+                method=select_method,
+                top_ratio=select_top_ratio,
+            )
+        dataset.select_features(result.selected_features)
+        if output_dir:
+            output_path = Path(output_dir)
+            output_path.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "stage": select_stage,
+                "method": select_method,
+                "top_ratio": select_top_ratio,
+                "selected_features": result.selected_features,
+                "scores": result.scores,
+            }
+            (output_path / "feature_selection.json").write_text(json.dumps(payload, indent=2))
+
     dataset.summary()
     
     # Train models
@@ -1198,6 +1237,23 @@ if __name__ == "__main__":
         help="sklearn scoring string (default: roc_auc for kfold, accuracy for loo)",
     )
     parser.add_argument(
+        "--select-stage",
+        choices=["none", "filter", "embedded"],
+        default="filter",
+        help="Feature selection stage (default: filter)",
+    )
+    parser.add_argument(
+        "--select-method",
+        default="",
+        help="Selection method (filter: mutual_info/anova/fisher/chi2; embedded: l1/rf/gbdt)",
+    )
+    parser.add_argument(
+        "--select-top-ratio",
+        type=float,
+        default=0.2,
+        help="Top ratio of features to keep after selection (default: 0.2)",
+    )
+    parser.add_argument(
         "--tune",
         action="store_true",
         help="Run Optuna hyperparameter tuning before training",
@@ -1271,6 +1327,10 @@ if __name__ == "__main__":
         if args.tune_only:
             raise SystemExit(0)
 
+    select_method = args.select_method
+    if not select_method:
+        select_method = "mutual_info" if args.select_stage == "filter" else "l1"
+
     run_experiment(
         group_dir=args.group_dir,
         target_csv=args.target_csv,
@@ -1281,4 +1341,7 @@ if __name__ == "__main__":
         cv_folds=args.cv_folds,
         cv_strategy=args.cv_strategy,
         cv_scoring=args.cv_scoring or None,
+        select_stage=args.select_stage,
+        select_method=select_method,
+        select_top_ratio=args.select_top_ratio,
     )
