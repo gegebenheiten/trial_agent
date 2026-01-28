@@ -10,7 +10,22 @@ This folder provides a lightweight, end-to-end scaffold for:
 
 Most steps run with `polars`. Feature selection and modeling require `scikit-learn`.
 
+Module layout
+
+- `cli.py`: CLI entrypoint (status/merge/viz/impute/select/train/eda)
+- `config.py`: table constants + pipeline config
+- `data/`: dataset loading + merge/status utilities
+- `preprocess/`: imputation + feature selection
+- `analysis/`: EDA + var stats + summary exports
+- `modeling/`: training + evaluation helpers
+
 Quick start
+
+0) Build target labels (Excel + Missing_map)
+   python -m ctg_ml_pipeline.cli build-labels \
+     --excel-path data/raw/NSCLC_Trialpanorama.xlsx \
+     --missing-map data/raw/Missing_map.csv \
+     --output-csv data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/target_labels.csv
 
 1) Status check (which NCTs are complete)
    python -m ctg_ml_pipeline.cli status \
@@ -31,6 +46,11 @@ Quick start
      --source notebooklm \
      --output-dir data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/merged_tables_notebooklm \
      --manifest-json data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/manifest_tables_notebooklm.json
+
+2c) Backfill Group_Type for NotebookLM R_Arm_Study (from base CSV)
+   python -m ctg_ml_pipeline.cli backfill-group-type \
+     --group-dir data/ctg_extract_v2/NSCLC_Trialpanorama_pd1 \
+     --output-json data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/backfill_group_type.json
 
 3) Feature visualization
    python -m ctg_ml_pipeline.cli viz \
@@ -69,6 +89,17 @@ Quick start
      --target <TARGET_COLUMN> \
      --model logistic \
      --output-json data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/metrics.json
+
+7) Optuna tuning (requires optuna)
+   pip install optuna
+
+   python -m ctg_ml_pipeline.cli tune \
+     --group-dir data/ctg_extract_v2/NSCLC_Trialpanorama_pd1 \
+     --target-csv data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/target_labels.csv \
+     --models logistic,lasso,rf,gbdt \
+     --n-trials 50 \
+     --cv-folds 5 \
+     --output-json data/ctg_extract_v2/NSCLC_Trialpanorama_pd1/_ml_pipeline/tune_results.json
 
 Notes
 - `merge` uses NotebookLM CSVs when available; pass --no-notebooklm to fall back to base CSVs.
