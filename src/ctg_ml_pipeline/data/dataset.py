@@ -310,6 +310,7 @@ class FeatureConfig:
     
     max_missing_rate: float = 0.5
     keep_features: set[str] = field(default_factory=set)
+    text_as_bool: bool = False
     
     feature_tables: list[str] = field(default_factory=lambda: [
         "D_Design_all", "D_Pop_all", "D_Drug_all_PKPD"
@@ -588,7 +589,7 @@ class TrialDataset:
                     elif ft_raw in ("categorical", "category"):
                         feat_type = FeatureType.CATEGORICAL
                     elif ft_raw in ("string", "text"):
-                        feat_type = FeatureType.TEXT
+                        feat_type = FeatureType.NUMERIC if cfg.text_as_bool else FeatureType.TEXT
                     else:
                         feat_type = get_feature_type(col)
                 elif force_keep:
@@ -606,7 +607,13 @@ class TrialDataset:
                     continue
                 
                 # Check missing rate
-                missing_rate = table_df.get_column(col).null_count() / len(table_df)
+                col_series = table_df.get_column(col)
+                if col_series.dtype == pl.Utf8:
+                    missing_rate = table_df.select(
+                        (pl.col(col).is_null() | (pl.col(col).str.strip_chars() == "")).mean()
+                    ).item()
+                else:
+                    missing_rate = col_series.null_count() / len(table_df)
                 if missing_rate > cfg.max_missing_rate:
                     continue
                 
@@ -659,6 +666,16 @@ class TrialDataset:
                             self.feature_types[col] = FeatureType.CATEGORICAL
                     
                 elif feat_type == FeatureType.TEXT:
+                    if cfg.text_as_bool:
+                        if cfg.include_numeric:
+                            present_expr = pl.col(col).is_not_null()
+                            if col_series.dtype == pl.Utf8:
+                                present_expr = present_expr & (pl.col(col).str.strip_chars() != "")
+                            table_df = table_df.with_columns(present_expr.cast(pl.Int8).alias(col))
+                            selected_cols.append(col)
+                            numeric_cols.append(col)
+                            self.feature_types[col] = FeatureType.NUMERIC
+                        continue
                     if cfg.include_text:
                         selected_cols.append(col)
                         text_cols.append(col)
@@ -1048,6 +1065,7 @@ def load_trial_dataset(
     categorical_encoding: Literal["label", "onehot"] = "label",
     impute_strategy: Literal["median", "mean", "zero", "none"] = "median",
     scale_features: bool = True,
+    text_as_bool: bool = False,
     keep_features_csv: str | Path | None = None,
 ) -> TrialDataset:
     """
@@ -1071,6 +1089,7 @@ def load_trial_dataset(
     config = DatasetConfig()
     config.features.max_missing_rate = max_missing_rate
     config.features.include_text = include_text
+    config.features.text_as_bool = text_as_bool
     config.features.categorical_encoding = categorical_encoding
     config.split.time_split = time_split
     config.split.test_size = test_size
