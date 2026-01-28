@@ -917,6 +917,7 @@ def run_experiment(
     select_stage: Literal["filter", "embedded", "none"] = "none",
     select_method: str = "mutual_info",
     select_top_ratio: float = 0.2,
+    text_as_bool: bool = False,
 ) -> ComparisonResult:
     """
     Run a complete ML experiment.
@@ -948,6 +949,7 @@ def run_experiment(
         target_csv=target_csv,
         max_missing_rate=max_missing_rate,
         time_split=time_split,
+        text_as_bool=text_as_bool,
     )
 
     if select_stage != "none":
@@ -1254,6 +1256,11 @@ if __name__ == "__main__":
         help="Top ratio of features to keep after selection (default: 0.2)",
     )
     parser.add_argument(
+        "--text-as-bool",
+        action="store_true",
+        help="Convert text features to boolean presence flags",
+    )
+    parser.add_argument(
         "--tune",
         action="store_true",
         help="Run Optuna hyperparameter tuning before training",
@@ -1344,4 +1351,5 @@ if __name__ == "__main__":
         select_stage=args.select_stage,
         select_method=select_method,
         select_top_ratio=args.select_top_ratio,
+        text_as_bool=args.text_as_bool,
     )
