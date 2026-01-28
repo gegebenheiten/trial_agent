@@ -738,8 +738,13 @@ def compare_models(
     print(f"Features used for modeling ({len(dataset.feature_names)} total):")
     print("-" * 70)
     for i, name in enumerate(dataset.feature_names):
-        feat_type = dataset.feature_types.get(name, "unknown")
-        type_str = feat_type.value if hasattr(feat_type, 'value') else str(feat_type)
+        stats = dataset.feature_stats.get(name, {})
+        display_type = stats.get("display_type")
+        if display_type:
+            type_str = display_type
+        else:
+            feat_type = dataset.feature_types.get(name, "unknown")
+            type_str = feat_type.value if hasattr(feat_type, "value") else str(feat_type)
         print(f"  {i+1:2}. {name:<35} ({type_str})")
     print("-" * 70 + "\n")
     

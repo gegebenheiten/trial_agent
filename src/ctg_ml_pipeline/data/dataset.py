@@ -589,7 +589,7 @@ class TrialDataset:
                     elif ft_raw in ("categorical", "category"):
                         feat_type = FeatureType.CATEGORICAL
                     elif ft_raw in ("string", "text"):
-                        feat_type = FeatureType.NUMERIC if cfg.text_as_bool else FeatureType.TEXT
+                        feat_type = FeatureType.TEXT
                     else:
                         feat_type = get_feature_type(col)
                 elif force_keep:
@@ -675,6 +675,14 @@ class TrialDataset:
                             selected_cols.append(col)
                             numeric_cols.append(col)
                             self.feature_types[col] = FeatureType.NUMERIC
+                            self.feature_stats[col] = {
+                                "table": table_name,
+                                "missing_rate": missing_rate,
+                                "dtype": "int8",
+                                "type": "text_boolean",
+                                "display_type": "Text(boolean)",
+                                "timepoint": timepoint_map.get((table_key, col), ""),
+                            }
                         continue
                     if cfg.include_text:
                         selected_cols.append(col)
@@ -971,7 +979,10 @@ class TrialDataset:
             {
                 "feature": name,
                 "table": self.feature_stats.get(name, {}).get("table", "unknown"),
-                "type": self.feature_types.get(name, FeatureType.EXCLUDE).value,
+                "type": self.feature_stats.get(name, {}).get(
+                    "display_type",
+                    self.feature_types.get(name, FeatureType.EXCLUDE).value,
+                ),
                 "missing_rate": self.feature_stats.get(name, {}).get("missing_rate", 0),
                 "dtype": self.feature_stats.get(name, {}).get("dtype", "unknown"),
             }
