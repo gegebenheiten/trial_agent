@@ -27,6 +27,8 @@ import re
 import polars as pl
 import numpy as np
 
+from ctg_ml_pipeline.data.cleaning import fill_unknowns, normalize_subgroup_ana
+
 
 def _extract_primary_drug(text: str) -> str:
     if text is None:
@@ -328,6 +330,18 @@ class TrialDataset:
         
         # Step 2: Load and classify features
         df, numeric_cols, categorical_cols, text_cols = self._load_features(target_df)
+
+        # Step 2.5: Data cleaning (fill null/empty with "Unknown" for text/categorical)
+        unknown_cols = [
+            col
+            for col in (categorical_cols + text_cols)
+            if col in df.columns and df.get_column(col).dtype == pl.Utf8
+        ]
+        if unknown_cols:
+            df = fill_unknowns(df, columns=unknown_cols, token="Unknown", empty_to_unknown=True)
+
+        # Step 2.6: Normalize Subgroup_Ana to Yes/No/Unknown
+        df = normalize_subgroup_ana(df)
         
         # Step 3: Get Start_Date for time split
         self._load_start_dates(df)
@@ -340,6 +354,8 @@ class TrialDataset:
             if col in df.columns:
                 self.text_features[col] = df.get_column(col).fill_null("").to_list()
 
+        breakpoint()
+        df.write_csv("debug_full_features.csv")
         # Step 6: Encode numeric and categorical features
         X, y, feature_names = self._encode_data(df, numeric_cols, categorical_cols)
         
@@ -350,6 +366,7 @@ class TrialDataset:
         if self.config.scale_features:
             X = self._scale_features(X)
         
+        breakpoint()
         self.X = X
         self.y = y
         self.feature_names = feature_names
