@@ -835,7 +835,6 @@ def compare_models(
             type_str = feat_type.value if hasattr(feat_type, "value") else str(feat_type)
         print(f"  {i+1:2}. {name:<35} ({type_str})")
     print("-" * 70 + "\n")
-    
     results = []
     for model_name in models:
         print(f"Training {model_name}...")
@@ -1014,6 +1013,7 @@ def run_experiment(
     select_top_ratio: float = 0.2,
     text_as_bool: bool = False,
     phase_filter: list[str] | str | None = None,
+    impute_strategy: Literal["median", "mean", "zero", "none"] = "median",
 ) -> ComparisonResult:
     """
     Run a complete ML experiment.
@@ -1047,7 +1047,19 @@ def run_experiment(
         time_split=time_split,
         text_as_bool=text_as_bool,
         phase_filter=phase_filter,
+        impute_strategy=impute_strategy,
     )
+
+    # Print per-feature missing rates after missing-rate filter (before selection)
+    if dataset.feature_stats:
+        print("\n" + "-" * 70)
+        print("Missing Rates After Filter")
+        print("-" * 70)
+        feature_info = dataset.get_feature_info()
+        for row in feature_info.sort("missing_rate", descending=True).iter_rows(named=True):
+            feat_display = row["feature"][:33] + ".." if len(row["feature"]) > 35 else row["feature"]
+            table_display = row["table"].replace("_all", "")[:16]
+            print(f"{feat_display:<35} {row['type']:<12} {table_display:<18} {row['missing_rate']:>7.1%}")
 
     if select_stage != "none":
         from ctg_ml_pipeline.preprocess.selection import (
@@ -1086,6 +1098,29 @@ def run_experiment(
                 "scores": result.scores,
             }
             (output_path / "feature_selection.json").write_text(json.dumps(payload, indent=2))
+        dataset.feature_filter_summary["selection_stage"] = select_stage
+        dataset.feature_filter_summary["selection_method"] = select_method
+        dataset.feature_filter_summary["selection_top_ratio"] = select_top_ratio
+    else:
+        dataset.feature_filter_summary["selection_stage"] = "none"
+        dataset.feature_filter_summary["selection_method"] = ""
+        dataset.feature_filter_summary["selection_top_ratio"] = 0.0
+
+    dataset.feature_filter_summary["post_selection"] = len(dataset.feature_names)
+
+    if dataset.feature_filter_summary:
+        print("\n" + "-" * 70)
+        print("Feature Filtering Summary")
+        print("-" * 70)
+        if dataset.feature_filter_summary.get("allowlist_used"):
+            print(
+                f"Allowlist: {dataset.feature_filter_summary.get('allowlist_present', 0)} present "
+                f"/ {dataset.feature_filter_summary.get('allowlist_total', 0)} total"
+            )
+        else:
+            print("Allowlist: not used")
+        print(f"After missing-rate: {dataset.feature_filter_summary.get('post_missing', 0)}")
+        print(f"After selection:    {dataset.feature_filter_summary.get('post_selection', 0)}")
 
     if cv_only:
         n_num = sum(1 for t in dataset.feature_types.values() if t == FeatureType.NUMERIC)
@@ -1330,6 +1365,12 @@ if __name__ == "__main__":
         help="Use random split instead of time-based split",
     )
     parser.add_argument(
+        "--impute-strategy",
+        choices=["median", "mean", "zero", "none"],
+        default="median",
+        help="Imputation strategy (default: median). Use 'none' to keep NaN",
+    )
+    parser.add_argument(
         "--models",
         nargs="+",
         default=["logistic", "rf", "gbdt"],
@@ -1463,6 +1504,7 @@ if __name__ == "__main__":
             time_split=not args.no_time_split,
             text_as_bool=args.text_as_bool,
             phase_filter=phase_filter,
+            impute_strategy=args.impute_strategy,
         )
 
         timeout = args.tune_timeout if args.tune_timeout > 0 else None
@@ -1513,4 +1555,5 @@ if __name__ == "__main__":
         text_as_bool=args.text_as_bool,
         cv_only=cv_only,
         phase_filter=phase_filter,
+        impute_strategy=args.impute_strategy,
     )

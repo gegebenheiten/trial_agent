@@ -28,6 +28,48 @@ import polars as pl
 import numpy as np
 
 
+def _extract_primary_drug(text: str) -> str:
+    if text is None:
+        return ""
+    s = str(text).strip()
+    if not s or s.lower() == "nan":
+        return ""
+    parts = re.split(r"\s*(?:;|,|/|\+| and )\s*", s, flags=re.IGNORECASE)
+    return parts[0].strip() if parts else s
+
+
+def _normalize_drug_name(text: str) -> str:
+    if text is None:
+        return ""
+    s = str(text).strip().lower()
+    if not s or s == "nan":
+        return ""
+    s = re.sub(r"\(.*?\)|\[.*?\]", "", s)
+    s = re.sub(r"[^a-z0-9]+", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+
+def _resolve_allowlist_table_name(table: str) -> str:
+    if not table:
+        return table
+    mapping = {
+        "D_Drug_PKPD": "D_Drug_all_PKPD",
+        "D_Drug": "D_Drug_all_PKPD",
+    }
+    if table in mapping:
+        return mapping[table]
+    return table if table.endswith("_all") else f"{table}_all"
+
+
+def _normalize_allowlist_key(table_name: str) -> str:
+    if not table_name:
+        return table_name
+    if table_name == "D_Drug_all_PKPD":
+        return "D_Drug_PKPD"
+    return table_name.replace("_all", "")
+
+
 # =============================================================================
 # Feature Type Definitions
 # =============================================================================
@@ -40,247 +82,31 @@ class FeatureType(Enum):
     EXCLUDE = "exclude"         # Should not be used as feature
 
 
-# Pre-defined feature types for each table
-# Key: column name pattern (exact match or substring)
-# Value: FeatureType
-
-FEATURE_TYPE_DEFINITIONS = {
-    # =========================
-    # D_Design_all columns
-    # =========================
-    
-    # IDs and text - EXCLUDE
-    "StudyID": FeatureType.EXCLUDE,
-    "Prot_No": FeatureType.EXCLUDE,
-    "NCT_No": FeatureType.EXCLUDE,
-    "EUCT_No": FeatureType.EXCLUDE,
-    "Other_No": FeatureType.EXCLUDE,
-    "Name_PI": FeatureType.EXCLUDE,
-    "Sponsor": FeatureType.EXCLUDE,
-    
-    # Long text fields - TEXT (for future embedding)
-    "Brief_Title": FeatureType.TEXT,
-    "Official_Title": FeatureType.TEXT,
-    "Brief_Summary": FeatureType.TEXT,
-    "Eligibility_Criteria": FeatureType.TEXT,
-    "Inv_Prod": FeatureType.TEXT,
-    "Intervention_All": FeatureType.TEXT,
-    "Control_Drug": FeatureType.TEXT,
-    "Success_Criteria_Text": FeatureType.TEXT,
-    "Name_Primary_EP": FeatureType.TEXT,
-    "Assess_Primary_EP": FeatureType.TEXT,
-    "Name_Key_Second_EP": FeatureType.TEXT,
-    "Assess_Key_Second_EP": FeatureType.TEXT,
-    "Name_Second_EP": FeatureType.TEXT,
-    "Assess_Second_EP": FeatureType.TEXT,
-    "Enroll_Duration_Plan": FeatureType.TEXT,
-    "FU_Duration_Plan": FeatureType.TEXT,
-    "Timing_IA": FeatureType.TEXT,
-    "Alpha_Spend_Func": FeatureType.TEXT,
-    "Adaptive_Design": FeatureType.TEXT,
-    "Intercurrent_Events": FeatureType.TEXT,
-    "Gatekeeping_Strategy": FeatureType.TEXT,
-    "Reg_Alignment": FeatureType.TEXT,
-    
-    # Categorical (Yes/No or small set of values)
-    "Study_Phase": FeatureType.CATEGORICAL,
-    "Study_Type": FeatureType.CATEGORICAL,
-    "GCP_Compliance": FeatureType.CATEGORICAL,
-    "Central_Lab": FeatureType.CATEGORICAL,
-    "Run_in": FeatureType.CATEGORICAL,
-    "DMC": FeatureType.CATEGORICAL,
-    "Fast_Track": FeatureType.CATEGORICAL,
-    "Breakthrough": FeatureType.CATEGORICAL,
-    "Priority_Review": FeatureType.CATEGORICAL,
-    "Accelerated_App": FeatureType.CATEGORICAL,
-    "Orphan_Drug": FeatureType.CATEGORICAL,
-    "Pediatric": FeatureType.CATEGORICAL,
-    "Rare_Disease": FeatureType.CATEGORICAL,
-    "MRCT": FeatureType.CATEGORICAL,
-    "Randomization": FeatureType.CATEGORICAL,
-    "Central_Random": FeatureType.CATEGORICAL,
-    "Rand_Ratio": FeatureType.CATEGORICAL,
-    "Random_Parallel": FeatureType.CATEGORICAL,
-    "Random_Crossover": FeatureType.CATEGORICAL,
-    "Random_Fact": FeatureType.CATEGORICAL,
-    "Random_Cluster": FeatureType.CATEGORICAL,
-    "Stratification": FeatureType.CATEGORICAL,
-    "Single_Arm": FeatureType.CATEGORICAL,
-    "Hist_control": FeatureType.CATEGORICAL,
-    "Blinding": FeatureType.CATEGORICAL,
-    "Placebo_control": FeatureType.CATEGORICAL,
-    "Active_Control": FeatureType.CATEGORICAL,
-    "Primary_Obj": FeatureType.CATEGORICAL,
-    "IRC": FeatureType.CATEGORICAL,
-    "Power": FeatureType.CATEGORICAL,
-    "Alpha": FeatureType.CATEGORICAL,
-    "Subgroup": FeatureType.CATEGORICAL,
-    "Interim": FeatureType.CATEGORICAL,
-    
-    # Numeric
-    "No_Center": FeatureType.NUMERIC,
-    "No_Center_NA": FeatureType.NUMERIC,
-    "No_Center_AP": FeatureType.NUMERIC,
-    "No_Center_WEU": FeatureType.NUMERIC,
-    "No_Center_EEU": FeatureType.NUMERIC,
-    "No_Center_AF": FeatureType.NUMERIC,
-    "No_Arm": FeatureType.NUMERIC,
-    "No_Stratification": FeatureType.NUMERIC,
-    "Level_Blinding": FeatureType.NUMERIC,
-    "Sample_Size": FeatureType.NUMERIC,
-    "Sample_Size_Actual": FeatureType.NUMERIC,
-    "Sided": FeatureType.NUMERIC,
-    "No_Primary_EP": FeatureType.NUMERIC,
-    "No_Key_Second_EP": FeatureType.NUMERIC,
-    "No_Second_EP": FeatureType.NUMERIC,
-    
-    # =========================
-    # D_Pop_all columns
-    # =========================
-    
-    # Text fields
-    "Disease": FeatureType.TEXT,
-    "Disease_Stage": FeatureType.TEXT,
-    "Prevalence": FeatureType.TEXT,
-    "Anat_Physio_Measures": FeatureType.TEXT,
-    "Clinical_Symptom_Score": FeatureType.TEXT,
-    "ECOG": FeatureType.TEXT,
-    "Karnofsky": FeatureType.TEXT,
-    "Cognitive_Scale": FeatureType.TEXT,
-    "Vital_Signs": FeatureType.TEXT,
-    "Imaging": FeatureType.TEXT,
-    "Baseline_Severity_Score": FeatureType.TEXT,
-    "Washout_Period": FeatureType.TEXT,
-    "GIST": FeatureType.TEXT,
-    "Diag_Dis_Detect": FeatureType.TEXT,
-    "Diag_Dis_Subtyp": FeatureType.TEXT,
-    "Diag_Molecular": FeatureType.TEXT,
-    "Diag_Histologic": FeatureType.TEXT,
-    "Diag_Radiographic": FeatureType.TEXT,
-    "Diag_Physiologic": FeatureType.TEXT,
-    "Prog_High_Risk": FeatureType.TEXT,
-    "Prog_Strat": FeatureType.TEXT,
-    "Prog_Molecular": FeatureType.TEXT,
-    "Prog_Inflamm": FeatureType.TEXT,
-    "Prog_Histologic": FeatureType.TEXT,
-    "Prog_Circulat": FeatureType.TEXT,
-    "Pred_Enrich": FeatureType.TEXT,
-    "Pred_Oncogenic": FeatureType.TEXT,
-    "Pred_Response": FeatureType.TEXT,
-    "Pred_Others": FeatureType.TEXT,
-    "Safety_Hema": FeatureType.TEXT,
-    "Safety_Hepa": FeatureType.TEXT,
-    "Safety_Renal": FeatureType.TEXT,
-    "Safety_Cardiac": FeatureType.TEXT,
-    "Safety_Immune": FeatureType.TEXT,
-    "Digit_Actig": FeatureType.TEXT,
-    "Digit_Physio": FeatureType.TEXT,
-    "Digit_Vocal": FeatureType.TEXT,
-    "Digit_Cognit": FeatureType.TEXT,
-    
-    # Categorical
-    "Gender": FeatureType.CATEGORICAL,
-    "Relapsed": FeatureType.CATEGORICAL,
-    "Refractory": FeatureType.CATEGORICAL,
-    "Kidney_Func": FeatureType.CATEGORICAL,
-    "Hepatic_Func": FeatureType.CATEGORICAL,
-    "Hemo_Func": FeatureType.CATEGORICAL,
-    "Cardio_Func": FeatureType.CATEGORICAL,
-    "Comorb_Prohib": FeatureType.CATEGORICAL,
-    "Concom_Prohib": FeatureType.CATEGORICAL,
-    "Pregnancy_Lactation": FeatureType.CATEGORICAL,
-    
-    # Numeric
-    "Age_Min": FeatureType.NUMERIC,
-    "Age_Max": FeatureType.NUMERIC,
-    "Prior_Line": FeatureType.NUMERIC,
-    
-    # =========================
-    # D_Drug_all_PKPD columns
-    # =========================
-    
-    # IDs - EXCLUDE
-    "DrugBank_ID": FeatureType.EXCLUDE,
-    "Generic_Name": FeatureType.EXCLUDE,
-    "Brand_Name": FeatureType.EXCLUDE,
-    "Generic_Name_DB": FeatureType.EXCLUDE,
-    "Brand_Name_DB": FeatureType.EXCLUDE,
-    "SMILES": FeatureType.EXCLUDE,
-    "SMILES_DB": FeatureType.EXCLUDE,
-    "ECFP6": FeatureType.EXCLUDE,
-    "SELFIES": FeatureType.EXCLUDE,
-    
-    # Text fields (descriptions from DrugBank)
-    "Molecule_Size": FeatureType.TEXT,
-    "V_d_DB": FeatureType.TEXT,
-    "Cl_DB": FeatureType.TEXT,
-    "T_half_DB": FeatureType.TEXT,
-    "Tox_General_DB": FeatureType.TEXT,
-    "Target_Engage": FeatureType.TEXT,
-    "Target_Engage_DB": FeatureType.TEXT,
-    "Biochem_Change": FeatureType.TEXT,
-    "Biochem_Change_DB": FeatureType.TEXT,
-    "Physio_Change": FeatureType.TEXT,
-    "Physio_Change_DB": FeatureType.TEXT,
-    "Imaging_Biomarker": FeatureType.TEXT,
-    "Molecular_EP": FeatureType.TEXT,
-    "K_el": FeatureType.TEXT,
-    "Cl_R": FeatureType.TEXT,
-    "EC50": FeatureType.TEXT,
-    "Emax": FeatureType.TEXT,
-    "Hill_Coeff": FeatureType.TEXT,
-    "AUC_IC50": FeatureType.TEXT,
-    "Excipients": FeatureType.TEXT,
-    "dose_unit": FeatureType.CATEGORICAL,
-    
-    # Categorical
-    "Is_Biosimilar": FeatureType.CATEGORICAL,
-    
-    # Numeric (PK/PD parameters)
-    "Molecule_Size_DB": FeatureType.NUMERIC,
-    "F_bioav_DB": FeatureType.NUMERIC,
-    "dose_value": FeatureType.NUMERIC,
-    "AUC": FeatureType.NUMERIC,
-    "C_Max": FeatureType.NUMERIC,
-    "T_Max": FeatureType.NUMERIC,
-    "Cl": FeatureType.NUMERIC,
-    "V_d": FeatureType.NUMERIC,
-    "F_bioav": FeatureType.NUMERIC,
-    "K_a": FeatureType.NUMERIC,
-    "V_ss": FeatureType.NUMERIC,
-    "T_half": FeatureType.NUMERIC,
-    "Cl_H": FeatureType.NUMERIC,
-    "LD_50": FeatureType.NUMERIC,
-    "Tox_General": FeatureType.NUMERIC,
-    "Tox_Hepa": FeatureType.NUMERIC,
-    "Tox_Cardiac": FeatureType.NUMERIC,
-    "Tox_Nephr": FeatureType.NUMERIC,  # Note: may contain "Invalid Molecule"
-    "Tox_Neur": FeatureType.NUMERIC,   # Note: may contain "Invalid Molecule"
+ALLOWLIST_FEATURE_TYPES = {
+    "continuous": FeatureType.NUMERIC,
+    "numeric": FeatureType.NUMERIC,
+    "number": FeatureType.NUMERIC,
+    "float": FeatureType.NUMERIC,
+    "int": FeatureType.NUMERIC,
+    "integer": FeatureType.NUMERIC,
+    "categorical": FeatureType.CATEGORICAL,
+    "category": FeatureType.CATEGORICAL,
+    "cat": FeatureType.CATEGORICAL,
+    "text": FeatureType.TEXT,
+    "string": FeatureType.TEXT,
+    "str": FeatureType.TEXT,
+    "exclude": FeatureType.EXCLUDE,
 }
 
 
-def get_feature_type(col_name: str) -> FeatureType:
-    """
-    Get the feature type for a column.
-    
-    Args:
-        col_name: Column name
-        
-    Returns:
-        FeatureType enum value
-    """
-    # Exact match first
-    if col_name in FEATURE_TYPE_DEFINITIONS:
-        return FEATURE_TYPE_DEFINITIONS[col_name]
-    
-    # Default: check if it looks like text (contains certain patterns)
-    text_patterns = ["_Text", "Description", "Summary", "Criteria", "Name_", "Assess_"]
-    for pattern in text_patterns:
-        if pattern in col_name:
-            return FeatureType.TEXT
-    
-    # Default to EXCLUDE for unknown columns
-    return FeatureType.EXCLUDE
+def map_allowlist_feature_type(raw: str | None) -> FeatureType | None:
+    """Normalize allowlist FeatureType string to FeatureType enum."""
+    if raw is None:
+        return None
+    key = str(raw).strip().lower()
+    if not key:
+        return None
+    return ALLOWLIST_FEATURE_TYPES.get(key)
 
 
 # =============================================================================
@@ -404,6 +230,7 @@ class TrialDataset:
         self.feature_names: list[str] = []
         self.feature_types: dict[str, FeatureType] = {}
         self.feature_stats: dict[str, dict] = {}
+        self.feature_filter_summary: dict[str, int | bool] = {}
         self.study_ids: list[str] = []
         self.start_dates: list[str] = []
         
@@ -415,6 +242,7 @@ class TrialDataset:
         self._scaler = None
         self._label_encoders: dict[str, object] = {}
         self._onehot_encoders: dict[str, object] = {}
+        self._primary_drug_map: dict[str, str] = {}
         
         # Load and preprocess data
         self._load_data()
@@ -424,6 +252,14 @@ class TrialDataset:
     ) -> tuple[set[tuple[str, str]] | None, dict[tuple[str, str], str], dict[tuple[str, str], str]]:
         """Load feature allowlist + timepoint/type mapping if available."""
         allowlist_csv = self.group_dir / "_ml_pipeline" / "feature_allowlist.csv"
+        if not allowlist_csv.exists():
+            standard_allowlist = (
+                Path(__file__).resolve().parents[1]
+                / "ml_standard_files"
+                / "feature_allowlist.csv"
+            )
+            if standard_allowlist.exists():
+                allowlist_csv = standard_allowlist
         if not allowlist_csv.exists():
             allowlist_csv = self.group_dir / "_ml_pipeline" / "feature_allowlist_T0.csv"
         if not allowlist_csv.exists():
@@ -442,6 +278,8 @@ class TrialDataset:
             var = str(row.get("Variable") or "").strip()
             if not table or not var:
                 continue
+            if table in ("D_Drug", "D_Drug_PKPD"):
+                table = "D_Drug_PKPD"
             allowed.add((table, var))
             tp = row.get("Availability_Timepoint")
             timepoints[(table, var)] = "" if tp is None else str(tp).strip()
@@ -452,6 +290,15 @@ class TrialDataset:
             return None, {}, {}
 
         return allowed, timepoints, type_map
+
+    @staticmethod
+    def _infer_feature_type_from_dtype(dtype: pl.DataType) -> FeatureType:
+        """Infer feature type when allowlist type is missing."""
+        if dtype.is_numeric() or dtype == pl.Boolean:
+            return FeatureType.NUMERIC
+        if dtype == pl.Utf8:
+            return FeatureType.CATEGORICAL
+        return FeatureType.CATEGORICAL
 
     def __len__(self) -> int:
         """Return the number of samples."""
@@ -492,7 +339,7 @@ class TrialDataset:
         for col in text_cols:
             if col in df.columns:
                 self.text_features[col] = df.get_column(col).fill_null("").to_list()
-        
+
         # Step 6: Encode numeric and categorical features
         X, y, feature_names = self._encode_data(df, numeric_cols, categorical_cols)
         
@@ -630,11 +477,15 @@ class TrialDataset:
         text_cols = []
 
         allowlist, timepoint_map, type_map = self._load_feature_allowlist()
+        allowlist_present: set[tuple[str, str]] = set()
+        pre_missing_count = 0
+        post_missing_count = 0
         if allowlist:
             allowed_tables = []
             for table, _ in allowlist:
-                table_name = table if table.endswith("_all") else f"{table}_all"
-                allowed_tables.append(table_name)
+                table_name = _resolve_allowlist_table_name(table)
+                if table_name:
+                    allowed_tables.append(table_name)
             cfg.feature_tables = list(dict.fromkeys(allowed_tables))
         
         for table_name in cfg.feature_tables:
@@ -643,7 +494,9 @@ class TrialDataset:
                 continue
             
             table_df = pl.read_csv(csv_path)
-            table_key = table_name.replace("_all", "")
+            if "Drug" in table_name:
+                table_df = self._filter_drug_table_primary(table_df)
+            table_key = _normalize_allowlist_key(table_name)
 
             # Identify columns with multiple values per StudyID (one-to-many)
             multi_value_cols: set[str] = set()
@@ -668,37 +521,33 @@ class TrialDataset:
                     continue
                 if col in multi_value_cols:
                     continue
-                
-                # Force-include overrides for vetted features
-                if allowlist is not None and (table_key, col) not in allowlist:
+
+                in_allowlist = allowlist is not None and (table_key, col) in allowlist
+                in_keep = col in cfg.keep_features
+                if allowlist is not None and not in_allowlist and not in_keep:
                     continue
-                force_keep = (allowlist is not None and (table_key, col) in allowlist) or (col in cfg.keep_features)
-                if allowlist is not None:
-                    ft_raw = type_map.get((table_key, col), "")
-                    if ft_raw in ("continuous", "numeric"):
-                        feat_type = FeatureType.NUMERIC
-                    elif ft_raw in ("categorical", "category"):
-                        feat_type = FeatureType.CATEGORICAL
-                    elif ft_raw in ("string", "text"):
-                        feat_type = FeatureType.TEXT
-                    else:
-                        feat_type = get_feature_type(col)
-                elif force_keep:
-                    dtype = table_df.get_column(col).dtype
-                    if dtype.is_numeric():
-                        feat_type = FeatureType.NUMERIC
-                    else:
-                        feat_type = FeatureType.CATEGORICAL
+                if in_allowlist:
+                    allowlist_present.add((table_key, col))
+
+                col_series = table_df.get_column(col)
+                dtype = col_series.dtype
+                force_keep = in_allowlist or in_keep
+
+                if in_allowlist:
+                    feat_type = map_allowlist_feature_type(type_map.get((table_key, col)))
+                    if feat_type is None:
+                        feat_type = self._infer_feature_type_from_dtype(dtype)
+                elif in_keep:
+                    feat_type = self._infer_feature_type_from_dtype(dtype)
                 else:
-                    # Get predefined feature type
-                    feat_type = get_feature_type(col)
-                
-                # Skip excluded columns
+                    feat_type = self._infer_feature_type_from_dtype(dtype)
+
                 if feat_type == FeatureType.EXCLUDE and not force_keep:
                     continue
-                
+
+                pre_missing_count += 1
+
                 # Check missing rate
-                col_series = table_df.get_column(col)
                 if col_series.dtype == pl.Utf8:
                     missing_rate = table_df.select(
                         (pl.col(col).is_null() | (pl.col(col).str.strip_chars() == "")).mean()
@@ -707,13 +556,14 @@ class TrialDataset:
                     missing_rate = col_series.null_count() / len(table_df)
                 if missing_rate > cfg.max_missing_rate:
                     continue
-                
+
+                post_missing_count += 1
+
                 # Handle based on feature type
-                dtype = table_df.get_column(col).dtype
                 
                 if feat_type == FeatureType.NUMERIC:
                     # Verify it's actually numeric or can be converted
-                    if dtype in [pl.Int64, pl.Int32, pl.Float64, pl.Float32]:
+                    if dtype.is_numeric() or dtype == pl.Boolean:
                         if cfg.include_numeric:
                             selected_cols.append(col)
                             numeric_cols.append(col)
@@ -749,7 +599,7 @@ class TrialDataset:
                                     selected_cols.append(col)
                                     text_cols.append(col)
                                     self.feature_types[col] = FeatureType.TEXT
-                    elif dtype in [pl.Int64, pl.Int32]:
+                    elif dtype.is_numeric() or dtype == pl.Boolean:
                         # Integer categorical (e.g., Level_Blinding)
                         if cfg.include_categorical:
                             selected_cols.append(col)
@@ -801,7 +651,96 @@ class TrialDataset:
                 suffix = f"_{table_name.split('_')[1]}" if "_" in table_name else ""
                 df = df.join(table_subset, on="StudyID", how="left", suffix=suffix)
         
+        self.feature_filter_summary = {
+            "allowlist_used": bool(allowlist),
+            "allowlist_total": len(allowlist) if allowlist else 0,
+            "allowlist_present": len(allowlist_present) if allowlist else 0,
+            "pre_missing": pre_missing_count,
+            "post_missing": post_missing_count,
+        }
         return df, numeric_cols, categorical_cols, text_cols
+
+    def _load_primary_drug_map(self) -> dict[str, str]:
+        if self._primary_drug_map:
+            return self._primary_drug_map
+
+        design_path = self.tables_dir / "D_Design_all.csv"
+        if not design_path.exists():
+            return {}
+
+        try:
+            df = pl.read_csv(design_path, columns=["StudyID", "Intervention_All"])
+        except Exception:
+            df = pl.read_csv(design_path)
+            if "StudyID" not in df.columns or "Intervention_All" not in df.columns:
+                return {}
+            df = df.select(["StudyID", "Intervention_All"])
+
+        df = df.with_columns(
+            pl.col("Intervention_All")
+            .map_elements(_extract_primary_drug, return_dtype=pl.Utf8)
+            .map_elements(_normalize_drug_name, return_dtype=pl.Utf8)
+            .alias("__primary_drug")
+        )
+        mapping = {
+            str(row["StudyID"]): str(row["__primary_drug"])
+            for row in df.iter_rows(named=True)
+            if row.get("StudyID") is not None and str(row.get("__primary_drug", "")).strip()
+        }
+        self._primary_drug_map = mapping
+        return mapping
+
+    def _filter_drug_table_primary(self, table_df: pl.DataFrame) -> pl.DataFrame:
+        drug_map = self._load_primary_drug_map()
+        if not drug_map:
+            return table_df
+
+        name_cols = [
+            c
+            for c in ["Generic_Name", "Brand_Name", "Generic_Name_DB", "Brand_Name_DB"]
+            if c in table_df.columns
+        ]
+        if not name_cols:
+            return table_df
+
+        map_df = pl.DataFrame(
+            {
+                "StudyID": list(drug_map.keys()),
+                "__primary_drug": list(drug_map.values()),
+            }
+        )
+        table_df = table_df.join(map_df, on="StudyID", how="left")
+
+        for col in name_cols:
+            table_df = table_df.with_columns(
+                pl.col(col).map_elements(_normalize_drug_name, return_dtype=pl.Utf8).alias(f"__norm_{col}")
+            )
+
+        match_expr = None
+        for col in name_cols:
+            expr = pl.col(f"__norm_{col}") == pl.col("__primary_drug")
+            match_expr = expr if match_expr is None else (match_expr | expr)
+        if match_expr is None:
+            return table_df
+
+        table_df = table_df.with_columns(
+            match_expr.alias("__match"),
+            pl.int_range(0, pl.len()).over("StudyID").alias("__row_idx"),
+        )
+        has_match = table_df.group_by("StudyID").agg(
+            pl.col("__match").any().alias("__has_match")
+        )
+        table_df = table_df.join(has_match, on="StudyID", how="left")
+        table_df = table_df.filter(
+            (pl.col("__has_match") & pl.col("__match"))
+            | (~pl.col("__has_match") & (pl.col("__row_idx") == 0))
+        )
+
+        drop_cols = ["__primary_drug", "__match", "__has_match", "__row_idx"]
+        for col in name_cols:
+            drop_cols.append(f"__norm_{col}")
+        table_df = table_df.drop([c for c in drop_cols if c in table_df.columns])
+        return table_df
     
     def _aggregate_drug_table(self, df: pl.DataFrame) -> pl.DataFrame:
         """Aggregate drug table to StudyID level."""
