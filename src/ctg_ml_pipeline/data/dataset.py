@@ -354,8 +354,6 @@ class TrialDataset:
             if col in df.columns:
                 self.text_features[col] = df.get_column(col).fill_null("").to_list()
 
-        breakpoint()
-        df.write_csv("debug_full_features.csv")
         # Step 6: Encode numeric and categorical features
         X, y, feature_names = self._encode_data(df, numeric_cols, categorical_cols)
         
@@ -366,7 +364,6 @@ class TrialDataset:
         if self.config.scale_features:
             X = self._scale_features(X)
         
-        breakpoint()
         self.X = X
         self.y = y
         self.feature_names = feature_names
