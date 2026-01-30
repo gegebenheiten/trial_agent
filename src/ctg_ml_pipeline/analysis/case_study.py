@@ -18,6 +18,39 @@ from ctg_ml_pipeline.data.dataset import FeatureType, load_trial_dataset
 from ctg_ml_pipeline.modeling.modeling import _build_cv, _get_model
 
 
+def _load_run_config(output_dir: Path) -> dict:
+    summary_path = output_dir / "summary.json"
+    if not summary_path.exists():
+        return {}
+    try:
+        payload = json.loads(summary_path.read_text())
+    except Exception:
+        return {}
+    run_cfg = payload.get("run_config")
+    return run_cfg if isinstance(run_cfg, dict) else {}
+
+
+def _load_tuned_params(output_dir: Path, run_config: dict) -> dict[str, dict[str, object]]:
+    path = run_config.get("tuning_results_path") if isinstance(run_config, dict) else ""
+    if not path:
+        path = str(output_dir / "tuning_results.json")
+    tuning_path = Path(path)
+    if not tuning_path.exists():
+        return {}
+    try:
+        payload = json.loads(tuning_path.read_text())
+    except Exception:
+        return {}
+    tuned: dict[str, dict[str, object]] = {}
+    for name, info in payload.items():
+        if not isinstance(info, dict):
+            continue
+        params = info.get("best_params")
+        if isinstance(params, dict):
+            tuned[str(name)] = params
+    return tuned
+
+
 def _load_best_model(output_dir: Path):
     model_path = output_dir / "best_model.pkl"
     if not model_path.exists():
@@ -161,12 +194,21 @@ def run_case_study(
     text_as_bool: bool = False,
     phase_filter: list[str] | None = None,
     top_k: int = 10,
-    use_oof: bool = False,
+    use_oof: bool | None = None,
     model_name: str | None = None,
-    cv_strategy: str = "kfold",
-    cv_folds: int = 5,
+    cv_strategy: str | None = None,
+    cv_folds: int | None = None,
     random_state: int = 42,
 ) -> None:
+    run_config = _load_run_config(output_dir)
+    if use_oof is None:
+        use_oof = bool(run_config.get("cv_only", False))
+    if cv_strategy is None or cv_strategy == "auto":
+        cv_strategy = str(run_config.get("cv_strategy") or "kfold")
+    if cv_folds is None or cv_folds <= 0:
+        cfg_folds = run_config.get("cv_folds")
+        cv_folds = int(cfg_folds) if isinstance(cfg_folds, int) and cfg_folds > 0 else 5
+
     model = None if use_oof else _load_best_model(output_dir)
     feature_list = _load_feature_list(output_dir)
 
@@ -195,6 +237,7 @@ def run_case_study(
     id_to_idx = {sid: i for i, sid in enumerate(dataset_scaled.study_ids)}
     folds = None
     oof_model_name = None
+    tuned_params = _load_tuned_params(output_dir, run_config) if use_oof else {}
     if use_oof:
         oof_model_name = model_name or _load_best_model_name(output_dir)
         if not oof_model_name:
@@ -214,7 +257,11 @@ def run_case_study(
             fold_model = None
             for train_idx, test_idx in folds:
                 if idx in test_idx:
-                    fold_model = _get_model(oof_model_name, random_state)
+                    fold_model = _get_model(
+                        oof_model_name,
+                        random_state,
+                        params=tuned_params.get(oof_model_name),
+                    )
                     fold_model.fit(dataset_scaled.X[train_idx], dataset_scaled.y[train_idx])
                     break
             if fold_model is None:
@@ -286,10 +333,11 @@ if __name__ == "__main__":
     parser.add_argument("--text-as-bool", action="store_true", help="Use text-as-boolean features")
     parser.add_argument("--phase", nargs="+", default=[], help="Phase filter (e.g., 1 or 1,2)")
     parser.add_argument("--top-k", type=int, default=10, help="Top single-feature changes to report")
-    parser.add_argument("--use-oof", action="store_true", help="Use CV fold model for each sample (OOF)")
+    parser.add_argument("--use-oof", action="store_true", default=None, help="Use CV fold model for each sample (OOF)")
+    parser.add_argument("--no-use-oof", action="store_true", help="Force using best_model.pkl instead of OOF")
     parser.add_argument("--model-name", default="", help="Model name for OOF (default: best_model from summary.json)")
-    parser.add_argument("--cv-strategy", choices=["kfold", "loo"], default="kfold", help="CV strategy for OOF")
-    parser.add_argument("--cv-folds", type=int, default=5, help="CV folds for OOF (ignored for loo)")
+    parser.add_argument("--cv-strategy", choices=["auto", "kfold", "loo"], default="auto", help="CV strategy for OOF")
+    parser.add_argument("--cv-folds", type=int, default=0, help="CV folds for OOF (ignored for loo)")
     parser.add_argument("--random-state", type=int, default=42, help="Random seed for OOF folds")
     args = parser.parse_args()
 
@@ -302,6 +350,10 @@ if __name__ == "__main__":
             if part:
                 phase_filter.append(part)
 
+    use_oof = args.use_oof
+    if args.no_use_oof:
+        use_oof = False
+
     run_case_study(
         output_dir=Path(args.output_dir),
         group_dir=args.group_dir,
@@ -311,9 +363,9 @@ if __name__ == "__main__":
         text_as_bool=args.text_as_bool,
         phase_filter=phase_filter,
         top_k=args.top_k,
-        use_oof=args.use_oof,
+        use_oof=use_oof,
         model_name=args.model_name or None,
-        cv_strategy=args.cv_strategy,
-        cv_folds=args.cv_folds,
+        cv_strategy=None if args.cv_strategy == "auto" else args.cv_strategy,
+        cv_folds=args.cv_folds if args.cv_folds > 0 else None,
         random_state=args.random_state,
     )

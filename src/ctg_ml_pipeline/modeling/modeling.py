@@ -434,6 +434,7 @@ def _require_sklearn() -> None:
 def _get_model(
     model_name: str,
     random_state: int = 42,
+    params: dict[str, object] | None = None,
 ) -> object:
     """Get a model instance by name."""
     from sklearn.linear_model import LogisticRegression
@@ -479,8 +480,14 @@ def _get_model(
     
     if model_name not in models:
         raise ValueError(f"Unknown model: {model_name}. Choose from: {list(models.keys())}")
-    
-    return models[model_name]
+
+    model = models[model_name]
+    if params:
+        try:
+            model.set_params(**params)
+        except Exception as exc:
+            print(f"Warning: failed to apply tuned params for {model_name}: {exc}")
+    return model
 
 
 def available_models() -> list[str]:
@@ -614,6 +621,7 @@ def train_and_evaluate(
     n_bootstrap: int = 1000,
     random_state: int = 42,
     cv_only: bool = False,
+    model_params: dict[str, object] | None = None,
 ) -> ModelResult:
     """
     Train and evaluate a model with comprehensive metrics.
@@ -640,7 +648,7 @@ def train_and_evaluate(
     from sklearn.model_selection import cross_val_score
     
     # Create model
-    model = _get_model(model_name, random_state)
+    model = _get_model(model_name, random_state, params=model_params)
 
     if cv_only:
         X = dataset.X
@@ -802,6 +810,7 @@ def compare_models(
     n_bootstrap: int = 1000,
     random_state: int = 42,
     cv_only: bool = False,
+    tuned_params: dict[str, dict[str, object]] | None = None,
 ) -> ComparisonResult:
     """
     Compare multiple models on the dataset.
@@ -847,6 +856,7 @@ def compare_models(
             n_bootstrap,
             random_state,
             cv_only=cv_only,
+            model_params=(tuned_params or {}).get(model_name),
         )
         results.append(result)
     
@@ -1014,6 +1024,8 @@ def run_experiment(
     text_as_bool: bool = False,
     phase_filter: list[str] | str | None = None,
     impute_strategy: Literal["median", "mean", "zero", "none"] = "median",
+    tuned_params: dict[str, dict[str, object]] | None = None,
+    run_config: dict[str, object] | None = None,
 ) -> ComparisonResult:
     """
     Run a complete ML experiment.
@@ -1140,6 +1152,7 @@ def run_experiment(
         cv_strategy=cv_strategy,
         cv_scoring=cv_scoring,
         cv_only=cv_only,
+        tuned_params=tuned_params,
     )
     
     # Show results
@@ -1158,7 +1171,7 @@ def run_experiment(
     
     # Export if output_dir specified
     if output_dir:
-        _export_results(output_dir, dataset, comparison)
+        _export_results(output_dir, dataset, comparison, run_config=run_config)
     
     return comparison
 
@@ -1167,6 +1180,7 @@ def _export_results(
     output_dir: str | Path,
     dataset: "TrialDataset",
     comparison: ComparisonResult,
+    run_config: dict[str, object] | None = None,
 ) -> None:
     """Export results to files."""
     import json
@@ -1318,6 +1332,8 @@ def _export_results(
         "best_mcc": best_result.mcc,
         "split_info": dataset.get_split_info(),
     }
+    if run_config:
+        summary["run_config"] = run_config
     with open(output_path / "summary.json", "w") as f:
         json.dump(summary, f, indent=2, default=str)
     
@@ -1493,6 +1509,8 @@ if __name__ == "__main__":
     if args.no_cv:
         print("CV disabled (--no-cv)")
 
+    tuned_params: dict[str, dict[str, object]] | None = None
+    tuning_path_str = ""
     if args.tune:
         from ctg_ml_pipeline.data.dataset import load_trial_dataset
         from ctg_ml_pipeline.modeling.tuning import tune_models
@@ -1531,13 +1549,36 @@ if __name__ == "__main__":
             for name, result in tune_results.items()
         }
         tuning_path.write_text(json.dumps(payload, indent=2))
+        tuning_path_str = str(tuning_path)
         print(f"Tuning results saved to: {tuning_path}")
+        tuned_params = {name: result.best_params for name, result in tune_results.items()}
 
         if args.tune_only:
             raise SystemExit(0)
 
     cv_folds = 0 if args.no_cv else args.cv_folds
     cv_only = (not args.no_cv) and (not args.use_test_split)
+    run_config = {
+        "cv_only": cv_only,
+        "cv_strategy": args.cv_strategy,
+        "cv_folds": cv_folds,
+        "cv_scoring": args.cv_scoring or None,
+        "time_split": not args.no_time_split,
+        "max_missing_rate": args.max_missing_rate,
+        "select_stage": args.select_stage,
+        "select_method": select_method,
+        "select_top_ratio": args.select_top_ratio,
+        "text_as_bool": args.text_as_bool,
+        "phase_filter": phase_filter,
+        "impute_strategy": args.impute_strategy,
+        "models": models,
+        "tuned": bool(args.tune),
+        "tuning_results_path": tuning_path_str,
+        "tune_trials": args.tune_trials if args.tune else 0,
+        "tune_timeout": args.tune_timeout if args.tune else 0,
+        "no_cv": args.no_cv,
+        "use_test_split": args.use_test_split,
+    }
 
     run_experiment(
         group_dir=args.group_dir,
@@ -1556,4 +1597,6 @@ if __name__ == "__main__":
         cv_only=cv_only,
         phase_filter=phase_filter,
         impute_strategy=args.impute_strategy,
+        tuned_params=tuned_params,
+        run_config=run_config,
     )
