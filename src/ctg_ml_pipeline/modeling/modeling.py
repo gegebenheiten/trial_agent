@@ -655,12 +655,12 @@ def train_and_evaluate(
         y = dataset.y
 
         if cv_scoring is None:
-            cv_scoring = "accuracy" if cv_strategy == "loo" else "roc_auc"
+            cv_scoring = "roc_auc"
         cv_splitter = _build_cv(np.asarray(y), cv_folds, cv_strategy, random_state)
         if cv_splitter is None:
             raise RuntimeError("CV splitter is None (insufficient samples or classes).")
 
-        # CV predictions
+        # CV predictions (OOF)
         from sklearn.model_selection import cross_val_predict
         y_pred = cross_val_predict(model, X, y, cv=cv_splitter, method="predict")
         y_prob = None
@@ -670,12 +670,15 @@ def train_and_evaluate(
             y_prob = cross_val_predict(model, X, y, cv=cv_splitter, method="decision_function")
             y_prob = (y_prob - y_prob.min()) / (y_prob.max() - y_prob.min() + 1e-10)
 
-        cv_scores = cross_val_score(
-            model, X, y,
-            cv=cv_splitter,
-            scoring=cv_scoring,
-            error_score=np.nan,
-        )
+        if cv_scoring == "roc_auc" and y_prob is not None and len(np.unique(y)) > 1:
+            cv_scores = np.array([roc_auc_score(y, y_prob)])
+        else:
+            cv_scores = cross_val_score(
+                model, X, y,
+                cv=cv_splitter,
+                scoring=cv_scoring,
+                error_score=np.nan,
+            )
 
         # Fit on full dataset for importances / SHAP
         model.fit(X, y)
@@ -693,7 +696,7 @@ def train_and_evaluate(
 
         # Cross-validation on training set
         if cv_scoring is None:
-            cv_scoring = "accuracy" if cv_strategy == "loo" else "roc_auc"
+            cv_scoring = "roc_auc"
         cv_splitter = _build_cv(np.asarray(y_train), cv_folds, cv_strategy, random_state)
         if cv_splitter is None:
             cv_scores = np.array([])
@@ -1049,6 +1052,25 @@ def run_experiment(
     print("=" * 70)
     print("Clinical Trial Outcome Prediction Experiment")
     print("=" * 70)
+    if run_config:
+        print("\nRun Configuration")
+        print("-" * 70)
+        print(f"  cv_only:          {run_config.get('cv_only')}")
+        print(f"  cv_strategy:      {run_config.get('cv_strategy')}")
+        print(f"  cv_folds:         {run_config.get('cv_folds')}")
+        print(f"  cv_scoring:       {run_config.get('cv_scoring')}")
+        print(f"  time_split:       {run_config.get('time_split')}")
+        print(f"  max_missing_rate: {run_config.get('max_missing_rate')}")
+        print(f"  select_stage:     {run_config.get('select_stage')}")
+        print(f"  select_method:    {run_config.get('select_method')}")
+        print(f"  select_top_ratio: {run_config.get('select_top_ratio')}")
+        print(f"  text_as_bool:     {run_config.get('text_as_bool')}")
+        print(f"  phase_filter:     {run_config.get('phase_filter')}")
+        print(f"  impute_strategy:  {run_config.get('impute_strategy')}")
+        print(f"  models:           {run_config.get('models')}")
+        print(f"  tuned:            {run_config.get('tuned')}")
+        if run_config.get('tuned'):
+            print(f"  tuning_results:   {run_config.get('tuning_results_path')}")
     
     # Load dataset
     print("\n[1/3] Loading dataset...")
@@ -1515,6 +1537,7 @@ if __name__ == "__main__":
         from ctg_ml_pipeline.data.dataset import load_trial_dataset
         from ctg_ml_pipeline.modeling.tuning import tune_models
 
+        print(f"Tuning models: {models}")
         dataset = load_trial_dataset(
             group_dir=args.group_dir,
             target_csv=args.target_csv,

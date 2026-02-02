@@ -153,7 +153,8 @@ def tune_model(
     _require_sklearn()
     _require_optuna()
     import optuna
-    from sklearn.model_selection import cross_val_score
+    from sklearn.model_selection import cross_val_score, cross_val_predict
+    from sklearn.metrics import roc_auc_score
 
     X = dataset.X
     y = dataset.y
@@ -163,11 +164,22 @@ def tune_model(
         raise RuntimeError("CV splitter is None (insufficient samples or single class).")
 
     if cv_scoring is None:
-        cv_scoring = "accuracy" if cv_strategy == "loo" else "roc_auc"
+        cv_scoring = "roc_auc"
 
     def objective(trial):
         params = _suggest_params(trial, model_name)
         model = _build_model_from_params(model_name, params, random_state)
+        if cv_scoring == "roc_auc":
+            y_prob = None
+            if hasattr(model, "predict_proba"):
+                y_prob = cross_val_predict(model, X, y, cv=cv, method="predict_proba")[:, 1]
+            elif hasattr(model, "decision_function"):
+                y_prob = cross_val_predict(model, X, y, cv=cv, method="decision_function")
+                y_prob = (y_prob - y_prob.min()) / (y_prob.max() - y_prob.min() + 1e-10)
+            if y_prob is None or len(np.unique(y)) < 2:
+                return float("nan")
+            return float(roc_auc_score(y, y_prob))
+
         scores = cross_val_score(
             model,
             X,
@@ -202,6 +214,7 @@ def tune_models(
 ) -> dict[str, TuneResult]:
     results: dict[str, TuneResult] = {}
     for model_name in models:
+        print(f"[tune] {model_name}")
         results[model_name] = tune_model(
             dataset,
             model_name=model_name,

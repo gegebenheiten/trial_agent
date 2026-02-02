@@ -356,7 +356,7 @@ class TrialDataset:
 
         # Step 6: Encode numeric and categorical features
         X, y, feature_names = self._encode_data(df, numeric_cols, categorical_cols)
-        
+
         # Step 7: Impute missing values
         X = self._impute_missing(X)
         

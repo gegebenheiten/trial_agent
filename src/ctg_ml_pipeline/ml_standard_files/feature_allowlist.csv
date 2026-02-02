@@ -23,7 +23,7 @@ Tox_Hepa,D_Drug_PKPD,continuous
 Tox_Cardiac,D_Drug_PKPD,continuous
 Biochem_Change,D_Drug_PKPD,text
 Physio_Change,D_Drug_PKPD,text
-Imaging_Biomarker,D_Drug_PKPD,categorical
+Imaging_Biomarker,D_Drug_PKPD,text
 Molecular_EP,D_Drug_PKPD,text
 EC50,D_Drug_PKPD,continuous
 Emax,D_Drug_PKPD,continuous
@@ -54,6 +54,12 @@ Safety_Immune,D_Pop,text
 Digit_Actig,D_Pop,categorical
 Digit_Physio,D_Pop,categorical
 GCP_Compliance,D_Design,categorical
+No_Center,D_Design,continuous
+No_Center_NA,D_Design,continuous
+No_Center_AP,D_Design,continuous
+No_Center_WEU,D_Design,continuous
+No_Center_EEU,D_Design,continuous
+No_Center_AF,D_Design,continuous
 Enroll_Duration_Plan,D_Design,text
 FU_Duration_Plan,D_Design,text
 Central_Lab,D_Design,categorical
